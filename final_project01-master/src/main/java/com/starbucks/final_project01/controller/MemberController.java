@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.starbucks.final_project01.DTO.PostLoginDTO;
@@ -19,34 +21,35 @@ import com.starbucks.final_project01.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/member")
+// @RequestMapping("/member")
 public class MemberController {
     @Autowired MemberService mService;
-    // 회원가입 api
-    @PostMapping("/join")
-    public ResponseEntity<Object> memberJoin(@RequestBody MemberInfoEntity data){
-        Map<String, Object> resultMap = mService.joinMember(data);
+    // 일반회원가입 api
+    @PostMapping("/member/join")
+    public ResponseEntity<Object> nomalMemberJoin(@RequestBody MemberInfoEntity data){
+        Map<String, Object> resultMap = mService.joinNomalMember(data);
         return new ResponseEntity<Object>(resultMap, (HttpStatus)resultMap.get("code"));
     }
-  
-    // 
-    @GetMapping("/main")
-    public ResponseEntity<Object> main(){
-        Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-        resultMap.put("message", "main");
-        return new ResponseEntity<Object>(resultMap, HttpStatus.OK);
-    }
-    
+    // 점주 회원 가입 api
+    @PostMapping("owner/join")
+    public ResponseEntity<Object> ownerMemberJoin(@RequestBody MemberInfoEntity data){
+        Map<String, Object> resultMap = mService.joinOwnerMember(data);
+        return new ResponseEntity<Object>(resultMap, (HttpStatus)resultMap.get("code"));
+    }   
 
-    // 로그인 api
+    // 중복검사 API
+    @GetMapping("/idcheck")
+    public ResponseEntity<Object> memberCheck(@RequestParam String id){
+        Map<String, Object> resultMap = mService.checkIdDuplicat(id);
+        return new ResponseEntity<Object>(resultMap, (HttpStatus)resultMap.get("code"));
+    }
+
+    // 로그인 API
     @PostMapping("/login")
     public ResponseEntity<Object> postLogin(@RequestBody PostLoginDTO data, HttpSession session){
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-        resultMap = mService.loginMembre(data);
+        resultMap = mService.loginMember(data);
         session.setAttribute("loginUser", resultMap.get("loginUser"));
         return new ResponseEntity<Object>(resultMap, (HttpStatus)resultMap.get("code"));
     }
-    
-    
-    
 }
