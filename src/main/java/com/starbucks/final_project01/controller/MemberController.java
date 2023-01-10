@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.starbucks.final_project01.DTO.PostLoginDTO;
+import com.starbucks.final_project01.DTO.PutEditMemberInfoDTO;
 import com.starbucks.final_project01.entity.MemberInfoEntity;
 import com.starbucks.final_project01.service.MemberService;
 
@@ -62,5 +64,10 @@ public class MemberController {
     }
 
     // 회원 정보 수정
-    
+    @PatchMapping("/member/edit")
+    public ResponseEntity<Object> editMemberInfo(@RequestBody PutEditMemberInfoDTO data, HttpSession session){
+        Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
+        resultMap = mService.editMemberInfo(session, data);
+        return new ResponseEntity<Object>(resultMap, (HttpStatus)resultMap.get("code"));
+    }
 }

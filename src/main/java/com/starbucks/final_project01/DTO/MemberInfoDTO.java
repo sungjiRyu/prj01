@@ -75,6 +75,9 @@ public class MemberInfoDTO {
         .build();
     }
 
+    // 회원수정 DTO
+    public static MemberInfoDTO editMemberInfo()
+
     
     
 }

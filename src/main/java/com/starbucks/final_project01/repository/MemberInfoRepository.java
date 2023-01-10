@@ -18,6 +18,6 @@ public interface MemberInfoRepository extends JpaRepository <MemberInfoEntity, L
     // 현재 로그인한 사용자 아이디와 일치하는 사용자 정보 출력 ( 로그인 사용자 정보 조회 )
     MemberInfoEntity findByMiId(String miId);
     
-    // 회원정보 수정 
-    MemberInfoEntity 
+    // 로그인한 회원 miSeq에 해당하는 정보 출력 
+    MemberInfoEntity findByMiSeq(Long miSeq);
 }

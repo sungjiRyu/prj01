@@ -11,6 +11,7 @@ import com.starbucks.final_project01.DTO.GetShowMemberInfoDTO;
 import com.starbucks.final_project01.DTO.LoginDTO;
 import com.starbucks.final_project01.DTO.MemberInfoDTO;
 import com.starbucks.final_project01.DTO.PostLoginDTO;
+import com.starbucks.final_project01.DTO.PutEditMemberInfoDTO;
 import com.starbucks.final_project01.entity.MemberInfoEntity;
 import com.starbucks.final_project01.repository.MemberInfoRepository;
 import com.starbucks.final_project01.util.AESAlgorithm;
@@ -148,14 +149,43 @@ public Map<String, Object> showLoginMemberInfo(HttpSession session){
     }
 
 // 회원정보 수정
-public Map<String, Object> editMemberInfo(HttpSession session){
+    // editMemberInfo 통해서 수정할 회원정보 받아옴
+    // session 에담긴 회원seq 통해서 수정할 회원정보 찾기
+    
+public Map<String, Object> editMemberInfo(HttpSession session, PutEditMemberInfoDTO editMemberInfo){
     Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
+    // session의 로그인 정보를 memberInfo에 담아둠
     MemberInfoEntity memberInfo = (MemberInfoEntity)session.getAttribute("loginUser");
+    // session의 miSeq로 로그인한 회원정보 끌어와서 
+    // editMemberInfo로 받은 입력값만 수정
+    // memberInfo = mRepo.findByMiSeq(memberInfo.getMiSeq()); // memberInfo 객체에 로그인한 회원정보 넣어주기
+    // 로그인한 회원정보가 있다면(= session에 데이터가 있다면) 회원수정 실행
     if(memberInfo != null){
-        memberInfo = mRepo.
+        try{String encPwd = AESAlgorithm.Encrypt(editMemberInfo.getPwd());
+            String checkEncPwd = AESAlgorithm.Encrypt(editMemberInfo.getCheckPwd());
+            memberInfo.setMiPwd(encPwd);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        memberInfo.setMiName(editMemberInfo.getName());
+        memberInfo.setMiNickname(editMemberInfo.getNickName());
+        memberInfo.setMiPhoneNum(editMemberInfo.getPhoneNum());
+        memberInfo.setMiAddress(editMemberInfo.getAdress());
+        memberInfo.setMiDetailAddress(editMemberInfo.getDetailAdress());
+        mRepo.save(memberInfo);
+        resultMap.put("status", true);
+        resultMap.put("message", "회원정보가 수정되었습니다.");
+        resultMap.put("code", HttpStatus.OK);
     }
-}  
+    else if(memberInfo == null){
+        resultMap.put("status", false);
+        resultMap.put("message", "로그인을 해주세요.");
+        resultMap.put("code", HttpStatus.BAD_REQUEST);
+    }
+    return resultMap;
 }
+}  
     
     
 
