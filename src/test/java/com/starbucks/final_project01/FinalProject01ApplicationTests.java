@@ -8,11 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
-<<<<<<< HEAD
 import com.starbucks.final_project01.entity.MemberEntity;
-=======
-import com.starbucks.final_project01.entity.MemberInfoEntity;
->>>>>>> 34c9e0df497c5a98f09199fd1e52287aa75e61ed
 import com.starbucks.final_project01.repository.MemberInfoRepository;
 import com.starbucks.final_project01.service.MemberService;
 import com.starbucks.final_project01.util.AESAlgorithm;
@@ -45,11 +41,7 @@ class FinalProject01ApplicationTests {
 	// 회원가입 테스트코드
 	@Test
 	void insertMember() {
-<<<<<<< HEAD
 		MemberEntity data = new MemberEntity();
-=======
-		MemberInfoEntity data = new MemberInfoEntity();
->>>>>>> 34c9e0df497c5a98f09199fd1e52287aa75e61ed
 		Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
         // 휴대폰 번호 판별해서 중복가입 방지 
         if(mRepo.countBymiPhoneNum(data.getMiPhoneNum()) == 1){
@@ -74,7 +66,6 @@ class FinalProject01ApplicationTests {
         }
 	}
 
-<<<<<<< HEAD
 	// @Test
 	// void showMyinfo(){
 	// 	// 로그인한 회원 정보 조회
@@ -102,44 +93,15 @@ class FinalProject01ApplicationTests {
 		Integer dupcheck = mRepo.countBymiId(content);
 		System.out.println(dupcheck);
 	}
-=======
-	@Test
-	void showMyinfo(){
-		// 로그인한 회원 정보 조회
-    Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-    MemberInfoEntity memberInfo = null;
-     memberInfo = mRepo.findByMiId(loginUser.getMiId());
-    if(memberInfo != null){
-            resultMap.put("status", true);
-            resultMap.put("message", "현재 로그인한 사용자 정보");
-            resultMap.put("code", HttpStatus.ACCEPTED);
-            resultMap.put("memberInfo", memberInfo);
-            return resultMap;
-        }
-    else{
-        resultMap.put("status", false);
-        resultMap.put("message", "오류발생");
-        resultMap.put("code", HttpStatus.BAD_REQUEST);
-        return resultMap;
-        }
-    }
->>>>>>> 34c9e0df497c5a98f09199fd1e52287aa75e61ed
 	}
 
 	// 로그인 기능
 	// 	@Test
 	// 	void memberLogin(){
-<<<<<<< HEAD
 	// 		MemberEntity data = new MemberEntity();
 	// 		Map<String, Object> loginMember(MemberEntity data) {
 	// 		Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 	// 		MemberEntity loginUser = null;
-=======
-	// 		MemberInfoEntity data = new MemberInfoEntity();
-	// 		Map<String, Object> loginMember(MemberInfoEntity data) {
-	// 		Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-	// 		MemberInfoEntity loginUser = null;
->>>>>>> 34c9e0df497c5a98f09199fd1e52287aa75e61ed
 	// 		try {
 	// 			loginUser = mRepo.findByMiIdAndMiPwd(data.getMiId(), AESAlgorithm.Encrypt(data.getMiPwd()));
 	// 		} catch(Exception e) {e.printStackTrace();}
@@ -154,10 +116,4 @@ class FinalProject01ApplicationTests {
 	// 			resultMap.put("loginUser", loginUser);
 	// 		}
 	// 	}
-<<<<<<< HEAD
 	// }
-=======
-	// }
-
-}
->>>>>>> 34c9e0df497c5a98f09199fd1e52287aa75e61ed
