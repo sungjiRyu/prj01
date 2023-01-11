@@ -12,7 +12,11 @@ import com.starbucks.final_project01.DTO.LoginDTO;
 import com.starbucks.final_project01.DTO.MemberInfoDTO;
 import com.starbucks.final_project01.DTO.PostLoginDTO;
 import com.starbucks.final_project01.DTO.PutEditMemberInfoDTO;
+<<<<<<< HEAD
 import com.starbucks.final_project01.entity.MemberEntity;
+=======
+import com.starbucks.final_project01.entity.MemberInfoEntity;
+>>>>>>> 34c9e0df497c5a98f09199fd1e52287aa75e61ed
 import com.starbucks.final_project01.repository.MemberInfoRepository;
 import com.starbucks.final_project01.util.AESAlgorithm;
 
@@ -21,10 +25,17 @@ import jakarta.servlet.http.HttpSession;
 
 @Service
 public class MemberService {
+<<<<<<< HEAD
     // MemberEntity loginUser = new MemberEntity();
     @Autowired MemberInfoRepository mRepo;
     // 일반회원가입 메소드
     public Map<String, Object> joinNomalMember(MemberEntity data){
+=======
+    // MemberInfoEntity loginUser = new MemberInfoEntity();
+    @Autowired MemberInfoRepository mRepo;
+    // 일반회원가입 메소드
+    public Map<String, Object> joinNomalMember(MemberInfoEntity data){
+>>>>>>> 34c9e0df497c5a98f09199fd1e52287aa75e61ed
            Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
         // 휴대폰 번호 판별해서 중복가입 방지 
         if(mRepo.countBymiPhoneNum(data.getMiPhoneNum()) == 1){
@@ -66,8 +77,13 @@ public class MemberService {
     }
 
     // 점주회원가입 메소드
+<<<<<<< HEAD
     public Map<String, Object> joinOwnerMember(MemberEntity data){
         MemberEntity  miEntity = new MemberEntity(); 
+=======
+    public Map<String, Object> joinOwnerMember(MemberInfoEntity data){
+        MemberInfoEntity  miEntity = new MemberInfoEntity(); 
+>>>>>>> 34c9e0df497c5a98f09199fd1e52287aa75e61ed
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
      // 휴대폰 번호 판별해서 중복가입 방지 
      if(mRepo.countBymiPhoneNum(data.getMiPhoneNum()) == 1){
@@ -102,7 +118,11 @@ public class MemberService {
     // 로그인 메소드  회원 상태값(1. 기본 2. 정지 3.탈퇴)
 public Map<String, Object> loginMember(PostLoginDTO data){
     Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
+<<<<<<< HEAD
         MemberEntity loginUser = null;
+=======
+        MemberInfoEntity loginUser = null;
+>>>>>>> 34c9e0df497c5a98f09199fd1e52287aa75e61ed
         try {
             loginUser = mRepo.findByMiIdAndMiPwd(data.getId(), AESAlgorithm.Encrypt(data.getPwd()));
         } catch(Exception e) {e.printStackTrace();}
@@ -131,7 +151,11 @@ public Map<String, Object> loginMember(PostLoginDTO data){
 // 로그인한 회원 정보 조회
 public Map<String, Object> showLoginMemberInfo(HttpSession session){
     Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
+<<<<<<< HEAD
     MemberEntity memberInfo = (MemberEntity)session.getAttribute("loginUser");
+=======
+    MemberInfoEntity memberInfo = (MemberInfoEntity)session.getAttribute("loginUser");
+>>>>>>> 34c9e0df497c5a98f09199fd1e52287aa75e61ed
     if(memberInfo != null){
             memberInfo = mRepo.findByMiId(memberInfo.getMiId());
             resultMap.put("status", true);
@@ -155,12 +179,17 @@ public Map<String, Object> showLoginMemberInfo(HttpSession session){
 public Map<String, Object> editMemberInfo(HttpSession session, PutEditMemberInfoDTO editMemberInfo){
     Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
     // session의 로그인 정보를 memberInfo에 담아둠
+<<<<<<< HEAD
     MemberEntity memberInfo = (MemberEntity)session.getAttribute("loginUser");
+=======
+    MemberInfoEntity memberInfo = (MemberInfoEntity)session.getAttribute("loginUser");
+>>>>>>> 34c9e0df497c5a98f09199fd1e52287aa75e61ed
     // session의 miSeq로 로그인한 회원정보 끌어와서 
     // editMemberInfo로 받은 입력값만 수정
     // memberInfo = mRepo.findByMiSeq(memberInfo.getMiSeq()); // memberInfo 객체에 로그인한 회원정보 넣어주기
     // 로그인한 회원정보가 있다면(= session에 데이터가 있다면) 회원수정 실행
     if(memberInfo != null){
+<<<<<<< HEAD
         if(memberInfo.getMiPwd() != null){
         try{String encPwd = AESAlgorithm.Encrypt(editMemberInfo.getPwd());
             String checkEncPwd = AESAlgorithm.Encrypt(editMemberInfo.getCheckPwd());
@@ -185,6 +214,20 @@ public Map<String, Object> editMemberInfo(HttpSession session, PutEditMemberInfo
         if(editMemberInfo.getDetailAdress() != null){
             memberInfo.setMiName(editMemberInfo.getDetailAdress());
         }
+=======
+        try{String encPwd = AESAlgorithm.Encrypt(editMemberInfo.getPwd());
+            String checkEncPwd = AESAlgorithm.Encrypt(editMemberInfo.getCheckPwd());
+            memberInfo.setMiPwd(encPwd);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        memberInfo.setMiName(editMemberInfo.getName());
+        memberInfo.setMiNickname(editMemberInfo.getNickName());
+        memberInfo.setMiPhoneNum(editMemberInfo.getPhoneNum());
+        memberInfo.setMiAddress(editMemberInfo.getAdress());
+        memberInfo.setMiDetailAddress(editMemberInfo.getDetailAdress());
+>>>>>>> 34c9e0df497c5a98f09199fd1e52287aa75e61ed
         mRepo.save(memberInfo);
         resultMap.put("status", true);
         resultMap.put("message", "회원정보가 수정되었습니다.");
@@ -196,6 +239,7 @@ public Map<String, Object> editMemberInfo(HttpSession session, PutEditMemberInfo
         resultMap.put("code", HttpStatus.BAD_REQUEST);
     }
     return resultMap;
+<<<<<<< HEAD
     }
 
 
@@ -281,6 +325,9 @@ public Map<String, Object> editMemberInfo(HttpSession session, PutEditMemberInfo
         }
         return resultMap;
     }
+=======
+}
+>>>>>>> 34c9e0df497c5a98f09199fd1e52287aa75e61ed
 }  
     
     
