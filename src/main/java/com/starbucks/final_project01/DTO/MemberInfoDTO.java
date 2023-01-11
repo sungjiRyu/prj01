@@ -1,8 +1,9 @@
 package com.starbucks.final_project01.DTO;
 
+import java.time.LocalDate;
 import java.util.Date;
 
-import com.starbucks.final_project01.entity.MemberInfoEntity;
+import com.starbucks.final_project01.entity.MemberEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +21,7 @@ public class MemberInfoDTO {
     private String  miPwd;
     private String  miName;
     private String  miNickname;
-    private Date    miBirth;
+    private LocalDate    miBirth;
     private Integer miGen;
     private Integer miStatus;
     private String  miPhoneNum;
@@ -32,21 +33,21 @@ public class MemberInfoDTO {
     private String  miDetailAddress;
 
     // 아이디 중복체크(DB에 저장된 아이디 조회)
-    public static MemberInfoDTO checkDuplicatedId(MemberInfoEntity memberInfo) {
+    public static MemberInfoDTO checkDuplicatedId(MemberEntity memberInfo) {
         return MemberInfoDTO.builder()
         .miId(memberInfo.getMiId())
         .build();
     }
 
     // 전화번호 중복체크(DB저장된 전화번호 조회)
-    public static MemberInfoDTO checkDuplicatedPhoneNum(MemberInfoEntity memberInfo){
+    public static MemberInfoDTO checkDuplicatedPhoneNum(MemberEntity memberInfo){
         return MemberInfoDTO.builder()
         .miPhoneNum(memberInfo.getMiPhoneNum())
         .build();
     }
 
     // 회원가입 정보 저장
-    public static MemberInfoDTO regMemberInfo(MemberInfoEntity memberInfo){
+    public static MemberInfoDTO regMemberInfo(MemberEntity memberInfo){
         return MemberInfoDTO.builder()
         .miSeq(memberInfo.getMiSeq())
         .miId(memberInfo.getMiId())
@@ -67,16 +68,14 @@ public class MemberInfoDTO {
     } 
 
     // 로그인 DTO
-    // MemberInfoEntity 중 miId(아이디) 와 miPwd(비밀번호) 만 사용 하는 DTO 생성
-    public static MemberInfoDTO memberLoginDTO(MemberInfoEntity memberInfoEntity){
+    // MemberEntity 중 miId(아이디) 와 miPwd(비밀번호) 만 사용 하는 DTO 생성
+    public static MemberInfoDTO memberLoginDTO(MemberEntity MemberEntity){
         return MemberInfoDTO.builder()
-        .miId(memberInfoEntity.getMiId())
-        .miPwd(memberInfoEntity.getMiPwd())
+        .miId(MemberEntity.getMiId())
+        .miPwd(MemberEntity.getMiPwd())
         .build();
     }
 
-    // 회원수정 DTO
-    public static MemberInfoDTO editMemberInfo()
 
     
     

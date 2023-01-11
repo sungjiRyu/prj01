@@ -6,10 +6,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.starbucks.final_project01.DTO.PostLoginDTO;
 import com.starbucks.final_project01.DTO.PutEditMemberInfoDTO;
-import com.starbucks.final_project01.entity.MemberInfoEntity;
+import com.starbucks.final_project01.entity.MemberEntity;
 import com.starbucks.final_project01.service.MemberService;
 
 import jakarta.servlet.http.HttpSession;
@@ -28,13 +30,13 @@ public class MemberController {
     @Autowired MemberService mService;
     // 일반회원가입 api
     @PostMapping("/member/join")
-    public ResponseEntity<Object> nomalMemberJoin(@RequestBody MemberInfoEntity data){
+    public ResponseEntity<Object> nomalMemberJoin(@RequestBody MemberEntity data){
         Map<String, Object> resultMap = mService.joinNomalMember(data);
         return new ResponseEntity<Object>(resultMap, (HttpStatus)resultMap.get("code"));
     }
     // 점주 회원 가입 api
     @PostMapping("owner/join")
-    public ResponseEntity<Object> ownerMemberJoin(@RequestBody MemberInfoEntity data){
+    public ResponseEntity<Object> ownerMemberJoin(@RequestBody com.starbucks.final_project01.entity.MemberEntity data){
         Map<String, Object> resultMap = mService.joinOwnerMember(data);
         return new ResponseEntity<Object>(resultMap, (HttpStatus)resultMap.get("code"));
     }   
@@ -68,6 +70,30 @@ public class MemberController {
     public ResponseEntity<Object> editMemberInfo(@RequestBody PutEditMemberInfoDTO data, HttpSession session){
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
         resultMap = mService.editMemberInfo(session, data);
+        return new ResponseEntity<Object>(resultMap, (HttpStatus)resultMap.get("code"));
+    }
+
+    // 회원 탈퇴
+    @PatchMapping("/member/leave")
+    public ResponseEntity<Object> deleteMemberInfo(HttpSession session){
+        Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
+        resultMap = mService.deleteMemberifo(session);
+        return new ResponseEntity<Object>(resultMap, (HttpStatus)resultMap.get("code"));
+    }
+
+    // 로그아웃
+    @PostMapping("/member/logout")
+    public ResponseEntity<Object> memberLogout(HttpSession session){
+        Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
+        resultMap = mService.logOut(session);
+        return new ResponseEntity<Object>(resultMap, (HttpStatus)resultMap.get("code"));
+    }
+
+    // 중복체크(id, phoneNum, nickName, businessNum)
+    @GetMapping("/member/{type}/{content}")
+    public ResponseEntity<Object> checkDuplicated(@PathVariable String type, @PathVariable String content){
+        Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
+        resultMap = mService.checkDuplicated(type, content);
         return new ResponseEntity<Object>(resultMap, (HttpStatus)resultMap.get("code"));
     }
 }
