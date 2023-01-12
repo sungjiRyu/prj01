@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1 th:text="${session.loginUser}"></h1>
+    <div th:if="${session.loginUser != null}">
+        <p>
+            <span th:text="${session.loginUser.name}"></span>
+            (<span th:text="${session.loginUser.id}"></span>)님
+        </p>
+    </div>
+    <th:block th:if="${session.loginUser == null}">
+        <a href="/login">로그인</a>
+    </th:block>
+    <th:block th:if="${session.loginUser != null}">
+        <a href="/logout">로그아웃
+        </a>
+    </th:block>
+    <a href="/member/list?page=0&size=10 th:if="${session.loginUser !=" null}">관리자 관리</a>
+</body>
+</html>

@@ -2,11 +2,11 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Spring Boot-FinalProject01Application<final_project01>",
+            "name": "Spring Boot-StarbucksApplication<starbucks>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
-            "mainClass": "com.starbucks.final_project01.FinalProject01Application",
-            "projectName": "final_project01",
+            "mainClass": "com.project1st.starbucks.StarbucksApplication",
+            "projectName": "starbucks",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
         }
