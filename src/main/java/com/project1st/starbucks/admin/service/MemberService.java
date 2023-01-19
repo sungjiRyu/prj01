@@ -133,20 +133,7 @@ public class MemberService {
         }
 
         
-        // // 아이디 중복체크
-        // public Map<String, Object> checkIdDuplicat(String id) {
-            //     Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-    //     if (mRepo.countBymiId(id) == 1) {
-    //         resultMap.put("status", false);
-    //         resultMap.put("message", "중복된 아이디");
-    //         resultMap.put("code", HttpStatus.CONFLICT);
-    //     } else {
-        //         resultMap.put("status", true);
-        //         resultMap.put("message", "사용가능한 아이디");
-        //         resultMap.put("code", HttpStatus.OK);
-        //     }ㄹㄹㅇ눠ㅗㅎㄹㅇㄴ호ㅓㅜㅗㅎㄹㅇㄴㅁㄴ홍ㄽ43
-        //     return resultMap;
-    // }
+      
     
     // 점주회원가입 메소드
     public Map<String, Object> joinOwnerMember(MemberEntity data) {
@@ -248,7 +235,7 @@ public class MemberService {
     }
     
     // 로그인 메소드 회원 상태값(1. 기본 2. 정지 3.탈퇴)
-    public Map<String, Object> loginMember(PostLoginDTO data) {
+    public Map<String, Object> loginMember(PostLoginDTO data, HttpSession session) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
         MemberEntity loginUser = null;
         try {
@@ -270,10 +257,10 @@ public class MemberService {
         }
         // 회원 상태값 1일때(정상로그인)
         else {
+            session.setAttribute("loginUser", loginUser);
             resultMap.put("status", true);
             resultMap.put("message", "로그인 되었습니다");
             resultMap.put("code", HttpStatus.ACCEPTED);
-            resultMap.put("loginUser", loginUser);
         }
         return resultMap;
     }
@@ -291,7 +278,7 @@ public class MemberService {
             return resultMap;
         } else {
             resultMap.put("status", false);
-            resultMap.put("message", "로그인 정보가 잘못되었습니다.");
+            resultMap.put("message", "먼저 로그인을 해주세요.");
             resultMap.put("code", HttpStatus.BAD_REQUEST);
             return resultMap;
         }
@@ -303,6 +290,7 @@ public class MemberService {
 
     public Map<String, Object> editMemberInfo(HttpSession session, PutEditMemberInfoDTO editMemberInfo) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
+        String pwdPattern = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*\\W).{8,20}$"; // 비밀번호는 영문과 특수문자 숫자를 포함하며 8자 이상이어야 합니다
         // session의 로그인 정보를 memberInfo에 담아둠
         MemberEntity memberInfo = (MemberEntity) session.getAttribute("loginUser");
         // session의 miSeq로 로그인한 회원정보 끌어와서
@@ -482,7 +470,7 @@ public class MemberService {
             // session에 저장된 정보는 3분후 삭제
             session.setAttribute("user", user);
             session.setAttribute("authNum", certificationNum);
-            // session.setMaxInactiveInterval(60 * 3);
+            session.setMaxInactiveInterval(60 * 3);
 
             resultMap.put("status", true);
             resultMap.put("message", "인증번호가 발송되었습니다. 3분안에 입력해 주세요");
@@ -527,7 +515,7 @@ public class MemberService {
              // session에 저장된 정보는 3분후 삭제
              session.setAttribute("user", user);
              session.setAttribute("authNum", certificationNum);
-            //  session.setMaxInactiveInterval(60 * 3);
+             session.setMaxInactiveInterval(60 * 3);
  
              resultMap.put("status", true);
              resultMap.put("message", "인증번호가 발송되었습니다. 3분안에 입력해 주세요");
@@ -624,7 +612,7 @@ public class MemberService {
             // session에 저장된 정보는 3분후 삭제
             session.setAttribute("user", user);
             session.setAttribute("authNum", certificationNum);
-            // session.setMaxInactiveInterval(60 * 3);
+            session.setMaxInactiveInterval(60 * 3);
 
             resultMap.put("status", true);
             resultMap.put("message", "인증번호가 발송되었습니다. 3분안에 입력해 주세요");
@@ -669,7 +657,7 @@ public class MemberService {
              // session에 저장된 정보는 3분후 삭제
              session.setAttribute("user", user);
              session.setAttribute("authNum", certificationNum);
-            //  session.setMaxInactiveInterval(60 * 3);
+             session.setMaxInactiveInterval(60 * 3);
  
              resultMap.put("status", true);
              resultMap.put("message", "인증번호가 발송되었습니다. 3분안에 입력해 주세요");
