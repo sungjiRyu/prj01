@@ -15,6 +15,7 @@ public class PostLoginDTO {
     // private Long seq;
     private String id;
     private String pwd;
+    private String name;
 
     public static PostLoginDTO fromEntity(MemberEntity memberInfoEntity){
         return PostLoginDTO.builder()
@@ -22,8 +23,7 @@ public class PostLoginDTO {
         .id(memberInfoEntity.getMiId())
         .pwd(memberInfoEntity.getMiPwd())
         .build();
-
     }
-        
+
     }
 
