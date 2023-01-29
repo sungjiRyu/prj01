@@ -2,6 +2,8 @@ package com.project1st.starbucks.store.vo;
 
 
 
+import java.time.LocalTime;
+
 import com.project1st.starbucks.store.entity.StoreBasicInfoEntity;
 
 import lombok.Data;
@@ -12,8 +14,8 @@ public class StoreInfoVO {
     private String branch;
     private String addressBasic;
     private String addressDetail;
-    private String openTime;
-    private String closeTime;
+    private LocalTime openTime;
+    private LocalTime closeTime;
     private String closeDays;
     private Integer minOrderPrice;
     private String agent;

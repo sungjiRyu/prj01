@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.project1st.starbucks.admin.entity.MemberEntity;
 import com.project1st.starbucks.admin.repository.MemberInfoRepository;
+import com.project1st.starbucks.jwt.JWT;
 import com.project1st.starbucks.member.DTO.PostFindPwdDTO;
 import com.project1st.starbucks.member.DTO.PostAuthNumByEmailDTO;
 import com.project1st.starbucks.member.DTO.PostFindIdDTO;
@@ -34,12 +35,14 @@ public class MemberService {
     @Autowired SendMessage sendMessage;
     @Autowired GetAuthNum getAuthNum;
     @Autowired GetTempPwd getTempPwd;
+    @Autowired JWT Jwt;
+//    " ^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d~!@#$%^&*()+|=]{8,20}$"
 
     // 일반회원가입 메소드
     public Map<String, Object> joinNomalMember(MemberEntity data) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-        String pwdPattern = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*\\W).{8,20}$"; // 비밀번호는 영문과 특수문자 숫자를 포함하며 8자 이상이어야 합니다
-        String emailPattern = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$"; // 비밀번호는 영문과 특수문자 숫자를 포함하며 8자 이상이어야 합니다
+        String pwdPattern =  "^[a-zA-Z\\d`~!@#$%^&*()-_=+]{8,20}$"; // 영어 및 숫자를 허용하며, 숫자키와 관련된 특수문자만 허용한다
+        String emailPattern = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$"; // 이메일 정규식 패턴
         // 유효성 검사(필수정보 공백x, 중복가입 방지)
         
         if(data.getMiId()==null){
@@ -64,7 +67,7 @@ public class MemberService {
         }
         else if(!Pattern.matches(pwdPattern, data.getMiPwd())){
             resultMap.put("status", false);
-            resultMap.put("message", "비밀번호는 영문과 특수문자, 숫자를 포함하여 8~20자여야 합니다.");
+            resultMap.put("message", "비밀번호는 영문과 숫자를 포함하여 8~20자여야 합니다.");
             resultMap.put("code", HttpStatus.BAD_REQUEST);
             }
         else if(data.getMiName() ==null ){
@@ -138,7 +141,7 @@ public class MemberService {
     // 점주회원가입 메소드
     public Map<String, Object> joinOwnerMember(MemberEntity data) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-        String pwdPattern = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*\\W).{8,20}$"; // 비밀번호는 영문과 특수문자 숫자를 포함하며 8자 이상이어야 합니다
+        String pwdPattern =  "^[a-zA-Z\\d`~!@#$%^&*()-_=+]{8,20}$"; // 비밀번호는 영문과 숫자를 포함하여 8자 이상이어야 합니다.
         // 휴대폰 번호 판별해서 중복가입 방지
         if(data.getMiId()==null){
             resultMap.put("status", false);
@@ -157,7 +160,7 @@ public class MemberService {
         }
         else if(!Pattern.matches(pwdPattern, data.getMiPwd())){
             resultMap.put("status", false);
-            resultMap.put("message", "비밀번호는 영문과 특수문자, 숫자를 포함하여 8~20자여야 합니다.");
+            resultMap.put("message", "비밀번호는 영문과 숫자를 포함하여 8~20자여야 합니다.");
             resultMap.put("code", HttpStatus.BAD_REQUEST);
             }
         else if(data.getMiName() ==null ){
@@ -211,7 +214,7 @@ public class MemberService {
         else {
             if (!Pattern.matches(pwdPattern, data.getMiPwd())) {
                 resultMap.put("status", false);
-                resultMap.put("message", "비밀번호는 영문과 특수문자, 숫자를 포함하여 8~20자여야 합니다.");
+                resultMap.put("message", "비밀번호는 영문과 숫자를 포함하여 8~20자여야 합니다.");
                 resultMap.put("code", HttpStatus.BAD_REQUEST);
             } else {
                 // 비밀번호 암호화
@@ -257,7 +260,9 @@ public class MemberService {
         }
         // 회원 상태값 1일때(정상로그인)
         else {
+            String jwtToken = Jwt.createJwt(data.getId());
             session.setAttribute("loginUser", loginUser);
+            resultMap.put("jwt", jwtToken);
             resultMap.put("status", true);
             resultMap.put("message", "로그인 되었습니다");
             resultMap.put("code", HttpStatus.ACCEPTED);
@@ -290,7 +295,6 @@ public class MemberService {
 
     public Map<String, Object> editMemberInfo(HttpSession session, PutEditMemberInfoDTO editMemberInfo) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-        String pwdPattern = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*\\W).{8,20}$"; // 비밀번호는 영문과 특수문자 숫자를 포함하며 8자 이상이어야 합니다
         // session의 로그인 정보를 memberInfo에 담아둠
         MemberEntity memberInfo = (MemberEntity) session.getAttribute("loginUser");
         // session의 miSeq로 로그인한 회원정보 끌어와서
@@ -324,6 +328,9 @@ public class MemberService {
                 memberInfo.setMiName(editMemberInfo.getDetailAdress());
             }
             mRepo.save(memberInfo);
+            session.removeAttribute("loginUser");
+            session.setAttribute("loginUser", memberInfo);
+
             resultMap.put("status", true);
             resultMap.put("message", "회원정보가 수정되었습니다.");
             resultMap.put("code", HttpStatus.OK);
@@ -372,10 +379,17 @@ public class MemberService {
         return resultMap;
     }
     
-    // 유효성 체크(id, phoneNum, nickName, businessNum)
+    // 유효성 체크(id, phoneNum, nickName, businessNum, pwd)
     // content = 입력받을 내용 , type = 중복검사할 타입(id, phoneNum, nickName, businessNum)
     public Map<String, Object> checkDuplicated(String type, String content) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
+        String pwdPattern =  "^[a-zA-Z\\d`~!@#$%^&*()-_=+]{8,20}$"; // 비밀번호는 영문과 숫자를 포함하여 8자 이상이어야 합니다.
+        String emailPattern = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$"; // 비밀번호는 영문과 숫자를 포함하여 8자 이상이어야 합니다.
+        // else if(!Pattern.matches(emailPattern, data.getMiId())){
+            // resultMap.put("status", false);
+            // resultMap.put("message", "이메일 형식에 맞는 아이디를 입력해주세요");
+            // resultMap.put("code", HttpStatus.BAD_REQUEST);
+        // }
         Integer i = 0;
         if (type.equals("id")) {
             i = mRepo.countBymiId(content);
@@ -383,7 +397,12 @@ public class MemberService {
                 resultMap.put("status", false);
                 resultMap.put("message", "같은 아이디가 있어요.");
                 resultMap.put("code", HttpStatus.BAD_REQUEST);
-            } else {
+            } else if(!Pattern.matches(emailPattern, content)){
+                resultMap.put("status", false);
+                resultMap.put("message", "이메일 형식에 맞는 아이디를 사용해주세요.");
+                resultMap.put("code", HttpStatus.BAD_REQUEST);
+            }
+            else{
                 resultMap.put("status", true);
                 resultMap.put("message", "사용할 수 있는 아이디 입니다.");
                 resultMap.put("code", HttpStatus.OK);
@@ -421,9 +440,22 @@ public class MemberService {
                 resultMap.put("message", "사용할 수 있는 사업자 번호 입니다.");
                 resultMap.put("code", HttpStatus.OK);
             }
-        } else {
+        } 
+        else if(type.equals("pwd")){
+                if(!Pattern.matches(pwdPattern, content)){
+                resultMap.put("status", false);
+                resultMap.put("message", "비밀번호는 영문과 숫자를 포함하여 8~20자여야 합니다.");
+                resultMap.put("code", HttpStatus.BAD_REQUEST);
+                }
+                else{
+                resultMap.put("status", false);
+                resultMap.put("message", "사용할 수 있는 비밀번호 입니다.");
+                resultMap.put("code", HttpStatus.BAD_REQUEST);
+                }
+            }
+        else{
             resultMap.put("status", false);
-            resultMap.put("message", "중복검사할 타입(id, phoneNum, nickName, businessNum) 을 확인해주세요.");
+            resultMap.put("message", "유효성 검사할 타입(id, phoneNum, nickName, businessNum, pwd) 을 확인해주세요.");
             resultMap.put("code", HttpStatus.BAD_REQUEST);
         }
         return resultMap;

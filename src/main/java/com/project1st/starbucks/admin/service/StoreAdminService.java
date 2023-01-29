@@ -12,6 +12,7 @@ import com.project1st.starbucks.store.repository.StoreBasicInfoRepository;
 import com.project1st.starbucks.store.repository.StoreMenuConnectRepository;
 
 import io.micrometer.common.lang.Nullable;
+import jakarta.transaction.Transactional;
 
 @Service
 public class StoreAdminService {
@@ -49,5 +50,9 @@ public class StoreAdminService {
                 .sbiMaxDeliveryTime(sbiMaxDeliveryTime).build();
                 store = sRepo.save(store);
         }
-
+    
+    @Transactional
+    public void deleteStore(Long sbiSeq){
+        sRepo.deleteById(sbiSeq);
+    }    
 }

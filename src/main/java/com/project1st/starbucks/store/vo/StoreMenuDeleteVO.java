@@ -15,7 +15,5 @@ public class StoreMenuDeleteVO {
     public void copyData(StoreMenuDeleteVO src) {
         if(src.getStore() != null)   this.store = src.getStore();
         if(src.getMenu() != null)   this.menu = src.getMenu();
-        // this.store = data.getStore().getSbiSeq();
-        // this.menu = data.getMenu().getMbiSeq();
     }
 }

@@ -38,7 +38,7 @@ public class AnnouncementService {
                 for(int i=0;i<iFile.length-1;i++){
                     iFileName += iFile[i];
                 }
-                String saveAnnounceFileName = "Event"+"_";
+                String saveAnnounceFileName = "Notice"+"_";
                 saveAnnounceFileName+=c.getTimeInMillis()+"."+iExt;
                 Path announceTargetFile = announceFolderLocation.resolve(saImgFile.getOriginalFilename());
                 

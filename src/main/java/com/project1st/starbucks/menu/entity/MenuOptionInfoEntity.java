@@ -21,5 +21,4 @@ public class MenuOptionInfoEntity {
     @Column(name = "moi_name")          private String moiName;
     @Column(name = "moi_cost")          private Integer moiCost;
     @Column(name = "moi_moc_seq")       private Long moiMocSeq;
-    @Column(name = "moi_mbi_seq")       private Long moiMbiSeq;
 }

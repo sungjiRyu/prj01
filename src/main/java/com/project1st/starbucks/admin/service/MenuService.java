@@ -11,6 +11,8 @@ import com.project1st.starbucks.admin.entity.MenuEntity;
 import com.project1st.starbucks.admin.entity.MenuImageEntity;
 import com.project1st.starbucks.admin.repository.MenuImageRepository;
 import com.project1st.starbucks.admin.repository.MenuRepository;
+import com.project1st.starbucks.menu.entity.MenuBasicInfoEntity;
+import com.project1st.starbucks.menu.repository.MenuBasicInfoRepository;
 import com.project1st.starbucks.menu.repository.ProductCategoryRepository;
 
 import java.nio.file.Files;
@@ -25,6 +27,7 @@ public class MenuService {
     @Autowired ProductCategoryRepository pcRepo;
     @Autowired MenuRepository mRepo;
     @Autowired MenuImageRepository miRepo;
+    @Autowired MenuBasicInfoRepository menuBasicRepo;
     @Value("${file.image.menuimage}") String menu_img_path;
 
     public void addMenu(
@@ -57,7 +60,7 @@ public class MenuService {
 
 
         MenuImageEntity menuimg = MenuImageEntity.builder()
-            .miiNumber(miiNumber)
+            .miiNumber(menuBasicRepo.findById(miiNumber).get())
             .miiImgFile(saveMenuFileName)
             .miiUri(iFileName).build();
         menuimg = miRepo.save(menuimg);

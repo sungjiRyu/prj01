@@ -1,6 +1,7 @@
 package com.project1st.starbucks;
 
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,10 +20,15 @@ import javax.mail.internet.MimeMessage;
 
 import org.json.simple.JSONObject;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.project1st.starbucks.admin.entity.MemberEntity;
+// import com.project1st.starbucks.jwt.MakeJwtToken;
 
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpSession;
 import net.nurigo.java_sdk.Coolsms;
 import net.nurigo.java_sdk.exceptions.CoolsmsException;
@@ -140,8 +146,58 @@ class StarbucksApplicationTests {
             } catch (MessagingException e) {
                 e.printStackTrace();
             }
-     
         }
-    }
+
+        
+
+        @Test
+        public void GetTempPwd (){
+            // 임시비밀번호 생성
+            
+                char[] charSetNum = new char[] {
+                        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                };
+                char[] charSetAlphabet = new char[] {
+                        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+                        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+        
+                    };
+                char[] charSetSign = new char[] {    
+                        '!', '@', '#', '$', '%', '^', '&' };
+        
+                StringBuffer sb = new StringBuffer();
+                SecureRandom sr = new SecureRandom();
+                sr.setSeed(new Date().getTime());
+        
+                int idx = 0;
+                int lenNum = charSetNum.length;
+                int lenAlp = charSetAlphabet.length;
+                int lenSign= charSetSign.length;
+                
+                idx = sr.nextInt(lenNum);    // 강력한 난수를 발생시키기 위해 SecureRandom을 사용한다.
+                sb.append(charSetNum[idx]);
+        
+                idx = sr.nextInt(lenSign);    // 강력한 난수를 발생시키기 위해 SecureRandom을 사용한다.
+                sb.append(charSetSign[idx]);
+        
+                for (int i=0; i<6; i++) {
+                    // idx = (int) (len * Math.random());
+                    idx = sr.nextInt(lenAlp);    // 강력한 난수를 발생시키기 위해 SecureRandom을 사용한다.
+                    sb.append(charSetAlphabet[idx]);
+                }
+                System.out.println(sb.toString());
+            }
+
+        // //jwttokken생성
+        // @Autowired MakeJwtToken makeJwt;
+        // @Test
+        // public void makeJwtTest(){
+        //  String jwt = makeJwt.makeJwt();
+        //  System.out.println("JWT = "+ jwt);
+
+        // }
+
+        }
+        
 
 

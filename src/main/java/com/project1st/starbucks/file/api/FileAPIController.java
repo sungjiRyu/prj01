@@ -28,6 +28,7 @@ public class FileAPIController {
     @Value("${file.image.eventdetail}") String detail_img_path;
     @Value("${file.image.announcement}") String notice_img_path;
     @Value("${file.image.menuimage}") String menu_img_path;
+    @Value("${file.image.membership}") String membership_img_path;
     @Autowired EventRepository eRepository;
     @Autowired EventDetailRepository dRepository;
 
@@ -47,6 +48,8 @@ public class FileAPIController {
             folderLocation = Paths.get(notice_img_path);
         } else if (type.equals("menu")) {
             folderLocation = Paths.get(menu_img_path);
+        } else if (type.equals("membership")) {
+            folderLocation = Paths.get(membership_img_path);
         }
         else {
             map.put("status", false);

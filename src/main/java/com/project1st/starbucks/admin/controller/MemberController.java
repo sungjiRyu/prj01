@@ -84,7 +84,7 @@ public class MemberController {
         return new ResponseEntity<Object>(resultMap, (HttpStatus)resultMap.get("code"));
     }
 
-    // 유효성(중복)체크(id, phoneNum, nickName, businessNum)
+    // 유효성 체크(id, phoneNum, nickName, businessNum, pwd)
     @GetMapping("/{type}/{content}")
     public ResponseEntity<Object> checkDuplicated(@PathVariable String type, @PathVariable String content){
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
@@ -95,7 +95,7 @@ public class MemberController {
     // ===============================================  < 아이디 찾기 > ===========================================================
 
     // 전화번호로 인증번호 발송
-    @PostMapping("/findId/phone")
+    @PostMapping("/findid/phone")
     public ResponseEntity<Object> findIdByPhone(@RequestBody PostFindIdDTO data, HttpSession session){
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
         resultMap = mService.IdAuthNumByPhone(data, session);
@@ -103,7 +103,7 @@ public class MemberController {
     }
 
     // 이메일로 인증번호 발송
-    @PostMapping("/findId/email")
+    @PostMapping("/findid/email")
     public ResponseEntity<Object> findIdByEmail(@RequestBody PostAuthNumByEmailDTO data, HttpSession session){
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
         resultMap = mService.IdAuthNumByEmail(data, session);
@@ -111,7 +111,7 @@ public class MemberController {
     }
 
     // 인증번호 일치시 아이디 보여줌
-    @GetMapping("/findId")
+    @GetMapping("/findid")
     public ResponseEntity<Object> findId(HttpSession session, @RequestParam Integer authNum){
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
         resultMap = mService.findId(session, authNum);
@@ -121,7 +121,7 @@ public class MemberController {
     // ===============================================  < 비밀번호 찾기 > ===========================================================
 
     // 비밀번호를 찾고자하는 아이디를 입력해주세요
-    @GetMapping("/findPwd/checkId")
+    @GetMapping("/findpwd/checkid")
     public ResponseEntity<Object> checkId(@RequestParam String Id){
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
         resultMap = mService.checkId(Id);
@@ -129,7 +129,7 @@ public class MemberController {
     }
 
     // 전화번호로 인증번호 발송
-    @PostMapping("/findPwd/phone")
+    @PostMapping("/findpwd/phone")
     public ResponseEntity<Object> findPwdByPhone(@RequestBody PostFindIdDTO data, HttpSession session){
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
         resultMap = mService.PwdAuthNumByPhone(data, session);
@@ -137,7 +137,7 @@ public class MemberController {
     }
 
     // 이메일로 인증번호 발송
-    @PostMapping("/findPwd/email")
+    @PostMapping("/findpwd/email")
     public ResponseEntity<Object> findPwdByEmail(@RequestBody PostFindPwdDTO data, HttpSession session){
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
         resultMap = mService.PwdAuthNumByEmail(data, session);
@@ -145,7 +145,7 @@ public class MemberController {
     }
 
     // 인증번호 일치할시 임시비밀번호 발급
-    @PostMapping("/findPwd")
+    @PostMapping("/findpwd")
     public ResponseEntity<Object> getTempPwd(@RequestParam Integer authNum, HttpSession session){
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
         resultMap = mService.getTempPwd(session, authNum);

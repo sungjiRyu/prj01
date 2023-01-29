@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.project1st.starbucks.admin.entity.MenuImageEntity;
 import com.project1st.starbucks.admin.repository.MenuImageRepository;
+import com.project1st.starbucks.menu.entity.MenuBasicInfoEntity;
+import com.project1st.starbucks.menu.repository.MenuBasicInfoRepository;
 
 
 
@@ -20,6 +22,7 @@ import com.project1st.starbucks.admin.repository.MenuImageRepository;
 
 public class MenuImageService {
     @Autowired MenuImageRepository miRepo;
+    @Autowired MenuBasicInfoRepository mbiRepo;
     @Value("${file.image.menuimage}") String menu_img_path;
         public void addEvent(
             MultipartFile miiImgFile,
@@ -46,7 +49,7 @@ public class MenuImageService {
 
                 
                 MenuImageEntity menu = MenuImageEntity.builder()
-                .miiNumber(miiNumber)
+                .miiNumber(mbiRepo.findById(miiNumber).get())
                 .miiImgFile(saveMenuFileName)
                 .miiUri(iFileName).build();
 

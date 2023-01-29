@@ -1,0 +1,46 @@
+#message1{
+    display: none;
+    color : red;
+    border-radius:10px;
+}
+
+#topMenu {           
+        height: 30px; 
+        width: 1000px; 
+        white-space:nowrap;
+        
+}
+#topMenu ul li {                      
+        list-style: none;            
+        color: white;                
+        background-color: #0b5505;   
+        float: left;                 
+        line-height: 30px;           
+        vertical-align: middle;      
+        text-align: center;          
+        white-space:nowrap;
+}
+#topMenu .menuLink {                               
+        text-decoration:none;                      
+        color: white;                              
+        display: block;                            
+        width: 150px;                              
+        font-size: 12px;                           
+        font-weight: bold;                         
+        font-family: "Trebuchet MS", Dotum, Arial; 
+        white-space:nowrap;
+}
+#topMenu .menuLink:hover {           
+        color: rgb(252, 252, 252);                  
+        background-color: #023004;   
+        white-space:nowrap;
+}
+
+.sub{
+        list-style: none;   
+        color: white;  
+        font-weight: bold; 
+        display: none;
+        text-decoration:none;         
+}
+

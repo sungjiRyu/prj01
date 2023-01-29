@@ -10,4 +10,5 @@ import com.project1st.starbucks.admin.entity.MenuEntity;
 public interface MenuRepository extends JpaRepository<MenuEntity, Long>{
     MenuEntity findByMbiSeq(Long mbiSeq);
     public Integer countByMbiName(String mbiName);
+    public Integer countByMbiSeq(Long mbiSeq);
 }

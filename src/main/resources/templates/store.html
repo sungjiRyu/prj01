@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <link rel = "stylesheet" href="css/member.css">
+</head>
+<body>
+   
+    <!-- 상단 메뉴바 -->
+    <nav id = "topMenu">
+        <ul>
+            <li><a class = "menuLink" href="main.html">메인</a></li>
+            <li><a class = "menuLink" href="member.html">회원관리</a>
+                <!-- <ul class = "sub" >
+                    <li><a href = "#">test1</a></li>
+                </ul> -->
+            </li>
+            <li><a class = "menuLink" href="store.html">지점관리</a></li>
+            <li><a class = "menuLink" href="notice.html">공지사항등록</a></li>
+            <li><a class = "menuLink" href="event.html">이벤트등록</a></li>
+            <li><a class = "menuLink" href="menu.html">메뉴등록</a></li>
+        </ul>
+    </nav>
+    <script>
+        $(".menuLink").mouseover(function(){
+            if($(".sub").is(":visible")){
+                $(".sub").slideUp();
+            }
+            else{
+                $(".sub").slideDown();
+            }
+        })
+    </script>
+    <h1>지점목록</h1>
+    <form action="#">
+        <input type = 'text' id = "storeName" placeholder="지점명을 입력하세요">
+        <button onclick="searchStore();">검색</button>
+    </form>
+    <table id = "storeList" border="1">
+        <thead>
+            <th>번호</th>
+            <th>지점명</th>
+            <th>주소</th>
+            <th>상세주소</th>
+            <th>영업시간</th>
+            <th>휴무일</th>
+            <th>최소주문금액(원)</th>
+            <th>점주명</th>
+            <th>사업자번호</th>
+            <th>전화번호</th>
+            <th>배달시간(최소~최대)</th>
+            <th>삭제</th>
+        </thead>
+        <tbody>
+            <button>test</button>
+        </tbody>
+
+    </table>
+    
+    <script>
+        // function storeList(){
+            axios({
+                url: 'http:haeji.mawani.kro.kr:9999/admin/store', // 가게리스트
+                method: 'get',
+                datatype: "JSON",
+               
+            })
+            .then(function(response){
+                console.log(response.data)
+                // 가게리스트 for문으로 출력
+                function storeList(){
+                let dataStr = "";
+                for(let i=0; i<response.data.store.length; i++) {
+                    let openHour = response.data.store[i].sbiOpenTime.substring(0,5);
+                    let closeHour = response.data.store[i].sbiCloseTime.substring(0,5);
+                    let hour =  openHour + "~" + closeHour;
+                    let deliverTime = response.data.store[i].sbiMinDeliveryTime + "~" + response.data.store[i].sbiMaxDeliveryTime+ "(분)";
+                dataStr += "<tr><td>"+response.data.store[i].sbiSeq+"</td>"+
+                           "<td>"+response.data.store[i].sbiBranchName+"</td>"+
+                           "<td>"+response.data.store[i].sbiAddressBasic+"</td>"+
+                           "<td>"+response.data.store[i].sbiAddressDetail+"</td>"+
+                           "<td>"+hour+"</td>"+
+                           "<td>"+response.data.store[i].sbiCloseDay+"</td>"+
+                           "<td>"+response.data.store[i].sbiMinOrder+"</td>"+
+                           "<td>"+response.data.store[i].sbiCeoName+"</td>"+
+                           "<td>"+response.data.store[i].sbiBusinessAddress+"</td>"+
+                           "<td>"+response.data.store[i].sbiPhone+"</td>"+
+                           "<td>"+deliverTime+"</td>"+
+                           "<td><button id = deleteBtn>삭제</button></td>"+
+                           "</tr>"
+                        //    document.getElementById(deleteBtn).addEventListener(click, deleteStore(response.data.store[i].sbiSeq))
+                }
+                document.querySelector("#storeList > tbody").innerHTML = dataStr
+            }
+            storeList();
+            });
+        // }
+
+        function searchStore(){
+        axios({
+                url: 'http://haeji.mawani.kro.kr:9999/search/store', // 가게검색
+                method: 'get',
+                datatype: "JSON",
+                params:{
+                    "branchName":document.getElementById("storeName").value
+                }
+            })
+            .then(function(response){
+                console.log(response.data)
+                let dataStr = "";
+                for(let i=0; i<response.data.list.length; i++) {
+                    let openHour = response.data.list[i].sbiOpenTime.substring(0,5);
+                    let closeHour = response.data.list[i].sbiCloseTime.substring(0,5);
+                    let hour =  openHour + "~" + closeHour;
+                    let deliverTime = response.data.list[i].sbiMinDeliveryTime + "~" + response.data.list[i].sbiMaxDeliveryTime+ "(분)";
+                dataStr += "<tr><td>"+response.data.list[i].sbiSeq+"</td>"+
+                           "<td>"+response.data.list[i].sbiBranchName+"</td>"+
+                           "<td>"+response.data.list[i].sbiAddressBasic+"</td>"+
+                           "<td>"+response.data.list[i].sbiAddressDetail+"</td>"+
+                           "<td>"+hour+"</td>"+
+                           "<td>"+response.data.list[i].sbiCloseDay+"</td>"+
+                           "<td>"+response.data.list[i].sbiMinOrder+"</td>"+
+                           "<td>"+response.data.list[i].sbiCeoName+"</td>"+
+                           "<td>"+response.data.list[i].sbiBusinessAddress+"</td>"+
+                           "<td>"+response.data.list[i].sbiPhone+"</td>"+
+                           "<td>"+deliverTime+"</td>"+
+                           "</tr>"
+                }
+                document.querySelector("#storeList > tbody").innerHTML = dataStr
+            })
+            .catch(function(err){
+                alert(err.response.data.message);
+            });
+        }
+
+        function deleteStore(storeNum){
+            axios({
+                url : "http://haeji.mawani.kro.kr:9999/admin/store", //가게 삭제
+                method: "delete",
+                datatype: "JSON",
+                params :{
+                    "sbiSeq" : storeNum
+                }
+            })
+            .then(function(response){
+                console.log(response.data)
+            })
+            .catch(function(err){
+                alert(err.response.data.message);
+            });
+        }
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel = "stylesheet" href="css/member.css">
+    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<body>
+    <table id = "memberList"  border="1">
+        <nav id = "topMenu">
+            <ul>
+                <li><a class = "menuLink" href="main.html">메인</a></li>
+                <li><a class = "menuLink" href="member.html">회원관리</a>
+                    <!-- <ul class = "sub" >
+                        <li><a href = "#">test1</a></li>
+                    </ul> -->
+                </li>
+                <li><a class = "menuLink" href="store.html">지점관리</a></li>
+                <li><a class = "menuLink" href="notice.html">공지사항등록</a></li>
+                <li><a class = "menuLink" href="event.html">이벤트등록</a></li>
+                <li><a class = "menuLink" href="menu.html">메뉴등록</a></li>
+            </ul>
+        </nav>
+    <script>
+        $(".menuLink").mouseover(function(){
+            if($(".sub").is(":visible")){
+                    $(".sub").slideUp();
+                }
+                else{
+                    $(".sub").slideDown();
+            }
+        })
+    </script>
+
+        <h1>회원목록</h1>
+        <thead>
+            <th>번호</th>
+            <th>아이디</th>
+            <th>이름</th>
+            <th>닉네임</th>
+            <th>상태</th>
+            
+        </thead>
+        <!-- 회원검색창 -->
+        <form action="#" id="search_form">
+            <input type = 'text' id="name" placeholder="회원이름을 입력하세요">
+            <button onclick="searchMember();" id="btn">검색</button>
+        </form>
+        <button onclick="mList();">회원목록 조회</button>
+        <div id=message1 >일치하는 회원이 없습니다. </div>
+        
+        <!-- ================================================================================== -->
+        <script>
+        // document.getElementById("message1").style.display = 'none';
+        // 회원검색 api
+        document.getElementById("search_form").addEventListener("submit", function(e){
+            e.preventDefault();
+        });
+        // document.getElementById("search_form").addEventListener("keydown", function(e){
+        //     console.log(e.keyCode);
+        // })
+
+        function searchMember(){
+            axios({
+                url: 'http://haeji.mawani.kro.kr:9999/search/member', // 회원검색
+                method: 'get', // 통신할 방식
+                datatype : "JSON",
+                params: {
+                    "memberName":document.getElementById("name").value
+                }   
+            })
+            .then(function(response) {
+                document.getElementById("message1").style.display = "none";
+                console.log(response.data)
+                let dataStr = "";
+                for(let i=0; i<response.data.list.length; i++) {
+                    let status = "";
+                    if(response.data.list[i].miStatus == 1) status = "정상";
+                    if(response.data.list[i].miStatus == 2) status = "정지";
+                    if(response.data.list[i].miStatus == 3) status = "탈퇴";
+                    dataStr += "<tr><td>"+response.data.list[i].miSeq+"</td>"+
+                        "<td>"+response.data.list[i].miId+"</td>"+
+                        "<td>"+response.data.list[i].miName+"</td>"+
+                        "<td>"+response.data.list[i].miNickname+"</td>"+
+                        "<td>"+status+"</td>"+
+                        "</tr>";
+                }
+                document.querySelector("#memberList > tbody").innerHTML = dataStr
+            })
+            .catch(function(err){
+                document.getElementById("message1").style.display = "block";
+                // alert(err.response.data.message);
+            });
+        }
+        </script>
+        <!-- ================================================================================== -->
+        <tbody>
+            <td></td>
+        </tbody>
+    </table>
+
+    <!-- 상태변경 참고코드 -->
+    <select id='fruit'>
+        <option value='apple'>정상</option>
+        <option value='strawberry'>정지</option>
+        <option value='grape'>탈퇴</option>  
+      </select>
+</body>
+
+<script>
+// 전체 회원리스트 api
+  axios({
+  url: 'http://haeji.mawani.kro.kr:9999/admin/list', // 회원리스트
+  method: 'get', // 통신할 방식
+  datatype : "JSON"
+})
+.then(function(response) {
+    console.log(response.data)
+    let dataStr = "";
+    for(let i=0; i<response.data.member.length; i++) {
+        let status = "";
+        if(response.data.member[i].miStatus == 1) status = "정상";
+        if(response.data.member[i].miStatus == 2) status = "정지";
+        if(response.data.member[i].miStatus == 3) status = "탈퇴";
+        dataStr += "<tr><td>"+response.data.member[i].miSeq+"</td>"+
+            "<td>"+response.data.member[i].miId+"</td>"+
+            "<td>"+response.data.member[i].miName+"</td>"+
+            "<td>"+response.data.member[i].miNickname+"</td>"+
+            "<td>"+status+"</td>"+
+            "</tr>";
+    }
+    document.querySelector("#memberList > tbody").innerHTML = dataStr
+});
+
+function mList(){
+axios({
+  url: 'http://haeji.mawani.kro.kr:9999/admin/list', // 회원리스트
+  method: 'get', // 통신할 방식
+  datatype : "JSON"
+})
+.then(function(response) {
+    console.log(response.data)
+    let dataStr = "";
+    for(let i=0; i<response.data.member.length; i++) {
+        let status = "";
+        if(response.data.member[i].miStatus == 1) status = "정상";
+        if(response.data.member[i].miStatus == 2) status = "정지";
+        if(response.data.member[i].miStatus == 3) status = "탈퇴";
+        dataStr += "<tr><td>"+response.data.member[i].miSeq+"</td>"+
+            "<td>"+response.data.member[i].miId+"</td>"+
+            "<td>"+response.data.member[i].miName+"</td>"+
+            "<td>"+response.data.member[i].miNickname+"</td>"+
+            "<td>"+status+"</td>"+
+            "</tr>";
+    }
+    document.querySelector("#memberList > tbody").innerHTML = dataStr
+});
+const memberList = document.getElementById("memberList");
+console.log(memberList.innerHTML);
+}
+// response.data 에 json 데이터가 담김
+
+const memberList = document.getElementById("memberList");
+console.log(memberList.innerHTML);
+
+// 회원 상태값표시 (1일때 정상, 2.정지 3. 탈퇴 나오게)
+// 리플레이스?
+// if response.data.member[i].mistatus 
+</script>
+
+
+
+</html>

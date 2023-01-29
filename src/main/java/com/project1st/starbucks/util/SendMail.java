@@ -49,10 +49,10 @@ public class SendMail {
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
 
             // Subject
-            message.setSubject("PLAYDDIT verification code");
+            message.setSubject("[SUTABUCKS] 인증번호를 발급했어요.");
 
             // Text
-            message.setText("Welcome to playddit. your code is [" + authNum + "]");
+            message.setText("인증번호는 [" + authNum + "]");
 
             Transport.send(message); // send message
 
@@ -98,7 +98,7 @@ public void sendMail(String userId, String newPwd) {
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
 
             // Subject
-            message.setSubject("PLAYDDIT verification code");
+            message.setSubject("[SUTABUCKS] 임시비밀번호를 발급했어요.");
 
             // Text
             message.setText("임시비밀번호는[" + newPwd + "]입니다.");

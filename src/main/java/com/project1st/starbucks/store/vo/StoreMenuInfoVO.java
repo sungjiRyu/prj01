@@ -19,8 +19,8 @@ public class StoreMenuInfoVO {
     private MenuBasicInfoEntity menu;
 
     public StoreMenuInfoVO(StoreMenuConnectEntity entity) {
-        this.smcNo = entity.getSmcSeq();
-        this.smcStock = entity.getSmcMenuStock();
+        this.smcNo = entity.getStoreMenuNo();
+        this.smcStock = entity.getStoreMenuStock();
         this.store = entity.getStore();
         this.menu = entity.getMenu();
     }

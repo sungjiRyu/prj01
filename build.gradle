@@ -36,9 +36,14 @@ dependencies {
 	// implementation group: 'javax.mail', name: 'javax.mail-api', version: '1.6.2'
 	// https://mvnrepository.com/artifact/com.sun.mail/javax.mail
 	implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
-
-
-
+		// https://mvnrepository.com/artifact/com.google.zxing/core
+	implementation group: 'com.google.zxing', name: 'core', version: '3.1.0'
+	// https://mvnrepository.com/artifact/com.google.zxing/javase
+	implementation group: 'com.google.zxing', name: 'javase', version: '3.1.0'
+	// jwt
+	implementation "io.jsonwebtoken:jjwt:0.9.1"
+	implementation 'javax.xml.bind:jaxb-api:2.3.0'
+	
 
 }
 

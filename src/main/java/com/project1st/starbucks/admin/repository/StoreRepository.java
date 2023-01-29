@@ -9,4 +9,5 @@ import com.project1st.starbucks.admin.entity.StoreEntity;
 @Repository
 public interface StoreRepository extends JpaRepository<StoreEntity, Long>{
     public Integer countBySbiBranchName(String sbiBranchName);
+    public Integer countBySbiSeq(Long sbiSeq);
 }
