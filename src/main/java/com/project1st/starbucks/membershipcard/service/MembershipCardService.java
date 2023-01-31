@@ -106,7 +106,6 @@ public class MembershipCardService {
     }
 
 
-
      // 카드 이미지 다운로드 하기
     public ResponseEntity<Resource> getCardQRImage (@PathVariable String uri, HttpServletRequest request) throws Exception {
         String filename = null;
@@ -171,7 +170,6 @@ public class MembershipCardService {
         resultMap.put("message", money + "원이 충전되었습니다. [카드 잔액 : " + cardEntity.getCardMoney() +"원]");
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
-
     
     
     //카드조회 
@@ -196,7 +194,6 @@ public class MembershipCardService {
         MembershipCardImageEntity cardImage = cardImageRepo.findById(card.getCardImage()).get();
         MembershipCardQREntity cardQr = cardQRRepo.findByCardqrMiSeq(memberInfo.getMiSeq());
         MembershipCardDetailVO result = new MembershipCardDetailVO(card, cardImage, cardQr);
-        // MembershipCardDetailVO result = new MembershipCardDetailVO(card, cardQr);
         resultMap.put("detail", result);
         resultMap.put("status", true);
         resultMap.put("message", memberInfo.getMiName() + " [닉네임:"+ memberInfo.getMiNickname() +"] 님의 멤버십 카드 상세조회 입니다.");
@@ -235,33 +232,5 @@ public class MembershipCardService {
     }
 
 
-    //카드결제 -> 장바구니 금액보다 적으면 에러 + 장바구니 금액만큼 결제하기
-    public ResponseEntity<Object> payMembershipCard(HttpSession session) {
-        Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-        // 세션으로 로그인 정보 불러오기
-        MemberEntity memberInfo = (MemberEntity) session.getAttribute("loginUser");
-        if (memberInfo == null) {
-            resultMap.put("status", false);
-            resultMap.put("message", "멤버십 카드 결제를 위해 로그인 해주세요.");
-            return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
-        }
-        // 멤버십 카드가 존재하지 않는다면 에러
-        if(cardRepo.findByCardMiSeq(memberInfo.getMiSeq()) == null) {
-            resultMap.put("status", false);
-            resultMap.put("message", "멤버십 카드가 존재하지 않습니다. 멤버십 카드를 발급해주세요.");
-            return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
-        }
-        // 장바구니 금액보다 멤버십카드 잔액이 적으면 에러
-        // ????코드????
-
-        // 장바구니 금액만큼 결제하기
-        // MembershipCardEntity cardEntity = cardRepo.findByCardMiSeq(memberInfo.getMiSeq());
-        // cardEntity.setCardMoney(cardEntity.getCardMoney() + money);
-        // cardRepo.save(cardEntity);
-        // resultMap.put("status", true);
-        // resultMap.put("message", money + "원이 충전되었습니다. [카드 잔액 : " + cardEntity.getCardMoney() +"원]");
-        return new ResponseEntity<>(resultMap, HttpStatus.OK);
-
-    }
     
 }

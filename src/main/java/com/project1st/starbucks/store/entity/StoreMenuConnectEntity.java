@@ -29,8 +29,8 @@ import lombok.NoArgsConstructor;
 @DynamicInsert
 public class StoreMenuConnectEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "smc_seq")               private Long StoreMenuNo;
-    @Column(name = "smc_menu_stock")        @ColumnDefault("100")   private Integer StoreMenuStock;        
+    @Column(name = "smc_seq")               private Long smcSeq;
+    @Column(name = "smc_menu_stock")        @ColumnDefault("100")   private Integer smcMenuStock;        
     @OneToOne @JoinColumn(name = "smc_sbi_seq") StoreBasicInfoEntity store; // 가게
     // @Column(name = "smc_sbi_seq")           private Integer smcSbiSeq;    // 가게
     @OneToOne @JoinColumn(name = "smc_mbi_seq") MenuBasicInfoEntity menu;   //메뉴

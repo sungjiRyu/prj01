@@ -10,4 +10,6 @@ import com.project1st.starbucks.admin.entity.EventDetailEntity;
 public interface EventDetailRepository extends JpaRepository<EventDetailEntity, Long>{
     // EventDetailEntity findByEventDetailUri(String uri);
     //  EventDetailEntity findByEventDetailUri(String uri);
+    public Integer countByEdiSeq (Long ediSeq);
+    EventDetailEntity findByEdiSeq (Long ediSeq);
 }

@@ -6,11 +6,7 @@ import lombok.Data;
 
 @Data
 public class MenuOptionVO {
-    private String menuOptionName;
-    private Integer menuOptionCost;
+    private String OptionName;
+    private Integer OptionCost;
     
-    public MenuOptionVO( MenuOptionInfoEntity option) {
-        this.menuOptionName = option.getMoiName();
-        this.menuOptionCost = option.getMoiCost();
-    }
 }

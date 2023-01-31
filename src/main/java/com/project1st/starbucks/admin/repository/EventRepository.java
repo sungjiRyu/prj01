@@ -9,6 +9,6 @@ import com.project1st.starbucks.admin.entity.EventEntity;
 
 @Repository
 public interface EventRepository extends JpaRepository<EventEntity, Long>{
-    // EventEntity findByEventUri(String uri);
-    // Integer countBySeq(Long seq);
+    public Integer countByEvSeq(Long evSeq);
+    EventEntity findByEvSeq(Long evSeq);
 }

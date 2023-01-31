@@ -14,8 +14,8 @@ public class StoreInfoVO {
     private String branch;
     private String addressBasic;
     private String addressDetail;
-    private LocalTime openTime;
-    private LocalTime closeTime;
+    private String openTime;
+    private String closeTime;
     private String closeDays;
     private Integer minOrderPrice;
     private String agent;
@@ -24,6 +24,7 @@ public class StoreInfoVO {
     private String minDeliveryTime;
     private String maxDeliveryTime;
 
+    public StoreInfoVO(){}
     public StoreInfoVO(StoreBasicInfoEntity entity) {
         this.storeNo = entity.getSbiSeq();
         this.branch = entity.getSbiBranchName();

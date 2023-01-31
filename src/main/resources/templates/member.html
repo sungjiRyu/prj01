@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel = "stylesheet" href="css/member.css">
-    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
 </head>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <body>
@@ -26,6 +25,10 @@
             </ul>
         </nav>
     <script>
+         document.addEventListener("DOMContentLoaded", function(){
+            mList();
+        });
+
         $(".menuLink").mouseover(function(){
             if($(".sub").is(":visible")){
                     $(".sub").slideUp();
@@ -42,7 +45,10 @@
             <th>아이디</th>
             <th>이름</th>
             <th>닉네임</th>
+            <th>생년월일</th>
+            <th>성별</th>
             <th>상태</th>
+            
             
         </thead>
         <!-- 회원검색창 -->
@@ -64,6 +70,7 @@
         //     console.log(e.keyCode);
         // })
 
+        
         function searchMember(){
             axios({
                 url: 'http://haeji.mawani.kro.kr:9999/search/member', // 회원검색
@@ -82,10 +89,17 @@
                     if(response.data.list[i].miStatus == 1) status = "정상";
                     if(response.data.list[i].miStatus == 2) status = "정지";
                     if(response.data.list[i].miStatus == 3) status = "탈퇴";
+                    let gen = "";
+                    if(response.data.list[i].miGen == 0) status = "";
+                    if(response.data.list[i].miGen == 1) status = "남";
+                    if(response.data.list[i].miGen == 2) status = "여";
+                    
                     dataStr += "<tr><td>"+response.data.list[i].miSeq+"</td>"+
                         "<td>"+response.data.list[i].miId+"</td>"+
                         "<td>"+response.data.list[i].miName+"</td>"+
                         "<td>"+response.data.list[i].miNickname+"</td>"+
+                        "<td>"+response.data.list[i].miBirth+"</td>"+
+                        "<td>"+gen+"</td>"+
                         "<td>"+status+"</td>"+
                         "</tr>";
                 }
@@ -113,28 +127,34 @@
 
 <script>
 // 전체 회원리스트 api
-  axios({
-  url: 'http://haeji.mawani.kro.kr:9999/admin/list', // 회원리스트
-  method: 'get', // 통신할 방식
-  datatype : "JSON"
-})
-.then(function(response) {
-    console.log(response.data)
-    let dataStr = "";
-    for(let i=0; i<response.data.member.length; i++) {
-        let status = "";
-        if(response.data.member[i].miStatus == 1) status = "정상";
-        if(response.data.member[i].miStatus == 2) status = "정지";
-        if(response.data.member[i].miStatus == 3) status = "탈퇴";
-        dataStr += "<tr><td>"+response.data.member[i].miSeq+"</td>"+
-            "<td>"+response.data.member[i].miId+"</td>"+
-            "<td>"+response.data.member[i].miName+"</td>"+
-            "<td>"+response.data.member[i].miNickname+"</td>"+
-            "<td>"+status+"</td>"+
-            "</tr>";
-    }
-    document.querySelector("#memberList > tbody").innerHTML = dataStr
-});
+//   axios({
+//   url: 'http://haeji.mawani.kro.kr:9999/admin/list', // 회원리스트
+//   method: 'get', // 통신할 방식
+//   datatype : "JSON"
+// })
+// .then(function(response) {
+//     console.log(response.data)
+//     let dataStr = "";
+//     for(let i=0; i<response.data.member.length; i++) {
+//         let status = "";
+//         if(response.data.member[i].miStatus == 1) status = "정상";
+//         if(response.data.member[i].miStatus == 2) status = "정지";
+//         if(response.data.member[i].miStatus == 3) status = "탈퇴";
+//         let gen = "";
+//         if(response.data.member[i].miGen == 0) status = "";
+//         if(response.data.member[i].miGen == 1) status = "남";
+//         if(response.data.member[i].miGen == 2) status = "여";
+//         dataStr += "<tr><td>"+response.data.member[i].miSeq+"</td>"+
+//             "<td>"+response.data.member[i].miId+"</td>"+
+//             "<td>"+response.data.member[i].miName+"</td>"+
+//             "<td>"+response.data.member[i].miNickname+"</td>"+
+//             "<td>"+response.data.member[i].miBirth+"</td>"+
+//             "<td>"+gen+"</td>"+
+//             "<td>"+status+"</td>"+
+//             "</tr>";
+//     }
+//     document.querySelector("#memberList > tbody").innerHTML = dataStr
+// });
 
 function mList(){
 axios({
@@ -150,10 +170,16 @@ axios({
         if(response.data.member[i].miStatus == 1) status = "정상";
         if(response.data.member[i].miStatus == 2) status = "정지";
         if(response.data.member[i].miStatus == 3) status = "탈퇴";
+        let gen = "";
+        if(response.data.member[i].miGen == 0) gen = "";
+        if(response.data.member[i].miGen == 1) gen = "남";
+        if(response.data.member[i].miGen == 2) gen = "여";
         dataStr += "<tr><td>"+response.data.member[i].miSeq+"</td>"+
             "<td>"+response.data.member[i].miId+"</td>"+
             "<td>"+response.data.member[i].miName+"</td>"+
             "<td>"+response.data.member[i].miNickname+"</td>"+
+            "<td>"+response.data.member[i].miBirth+"</td>"+
+            "<td>"+gen+"</td>"+
             "<td>"+status+"</td>"+
             "</tr>";
     }

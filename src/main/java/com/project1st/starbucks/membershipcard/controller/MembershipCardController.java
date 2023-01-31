@@ -59,9 +59,5 @@ public class MembershipCardController {
     }
 
 
-    //카드결제 -> 장바구니 금액보다 적으면 에러 + 장바구니 금액만큼 결제하기
-    @PatchMapping("/pay")
-    public ResponseEntity<Object> payMembershipCard(HttpSession session) {
-        return cardService.payMembershipCard(session);
-    }
+
 }

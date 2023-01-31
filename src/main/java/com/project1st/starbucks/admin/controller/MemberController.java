@@ -54,9 +54,9 @@ public class MemberController {
 
     // 로그인 회원정보 조회
     @GetMapping("/myinfo")
-    public ResponseEntity<Object> showMyinfo(HttpSession session){
+    public ResponseEntity<Object> showMyinfo(String miId){
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-        resultMap = mService.showLoginMemberInfo(session);
+        resultMap = mService.showLoginMemberInfo(miId);
         return new ResponseEntity<Object>(resultMap, (HttpStatus)resultMap.get("code"));
     }
 
@@ -72,7 +72,7 @@ public class MemberController {
     @PatchMapping("/leave")
     public ResponseEntity<Object> deleteMemberInfo(HttpSession session){
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-        resultMap = mService.deleteMemberifo(session);
+        resultMap = mService.deleteMemberinfo(session);
         return new ResponseEntity<Object>(resultMap, (HttpStatus)resultMap.get("code"));
     }
 

@@ -9,5 +9,7 @@ import com.project1st.starbucks.admin.entity.AnnouncementEntity;
 @Repository
 public interface AnnouncementRepository extends JpaRepository<AnnouncementEntity, Long>{
     // AnnouncementEntity findBysaUri(String uri);
-    
+    public Integer countBySaSeq(Long saSeq);
+    AnnouncementEntity findBySaSeq(Long saSeq);
+    public Integer countBySaTitle(String saTitle);
 }

@@ -14,23 +14,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class PutEditMemberInfoDTO {
-    private String pwd;
-    private String checkPwd;    
-    private String nickName;
-    private String name;
-    private String phoneNum;
-    private String adress;
-    private String detailAdress;
+    private String miPwd;
+    private String miCheckPwd;    
+    private String miNickName;
+    private String miName;
+    private String miPhoneNum;
+    private String miAdress;
+    private String miDetailAdress;
 
     public static PutEditMemberInfoDTO fromEntity(MemberEntity memberInfoEntity){
         return PutEditMemberInfoDTO.builder()
-        .pwd(memberInfoEntity.getMiPwd())
-        .checkPwd(memberInfoEntity.getMiPwd())
-        .nickName(memberInfoEntity.getMiNickname())
-        .name(memberInfoEntity.getMiName())
-        .phoneNum(memberInfoEntity.getMiPhoneNum())
-        .adress(memberInfoEntity.getMiAddress())
-        .detailAdress(memberInfoEntity.getMiDetailAddress())
+        .miPwd(memberInfoEntity.getMiPwd())
+        .miCheckPwd(memberInfoEntity.getMiPwd())
+        .miNickName(memberInfoEntity.getMiNickname())
+        .miName(memberInfoEntity.getMiName())
+        .miPhoneNum(memberInfoEntity.getMiPhoneNum())
+        .miAdress(memberInfoEntity.getMiAddress())
+        .miDetailAdress(memberInfoEntity.getMiDetailAddress())
         .build();
     }
 

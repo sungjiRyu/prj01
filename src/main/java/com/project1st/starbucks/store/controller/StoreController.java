@@ -50,27 +50,27 @@ public class StoreController {
 
 
     @GetMapping("/menu/list/detail") // <내 지점에 등록된 메뉴 상세보기> -> 완료 ♥
-    public ResponseEntity<Object> getStoreMenuDetail(HttpSession session, @RequestParam Long menuSeq) {
-        return stService.storeMenuDetail(session, menuSeq);
+    public ResponseEntity<Object> getStoreMenuDetail(HttpSession session, @RequestParam Long menuNo) {
+        return stService.storeMenuDetail(session, menuNo);
     }
 
 
     @PutMapping("/menu/add") // <내 지점에 메뉴 등록하기> -> 완료 ♥
     // public ResponseEntity<Object> putStoreMenuList(@RequestBody StoreMenuAddVO data, HttpSession session) {
-    public ResponseEntity<Object> putStoreMenuList(@RequestParam Long menuSeq, HttpSession session) {
-        return stService.insertStoreMenuList(menuSeq, session);
+    public ResponseEntity<Object> putStoreMenuList(@RequestParam Long menuNo, HttpSession session) {
+        return stService.insertStoreMenuList(menuNo, session);
     }
 
     
     @DeleteMapping("/menu/delete") // <내 지점에 메뉴 삭제하기> -> 완료 ♥
-    public ResponseEntity< Map<String, Object> > deleteStoreMenuList(@RequestParam Long menuSeq, HttpSession session) {
-        return stService.deleteStoreMenuList(menuSeq, session);
+    public ResponseEntity< Map<String, Object> > deleteStoreMenuList(@RequestParam Long menuNo, HttpSession session) {
+        return stService.deleteStoreMenuList(menuNo, session);
     }
 
 
     @GetMapping("/search") // <가게 검색하기> -> 완료 ♥
-    public ResponseEntity<Object> getStoreSearch(@RequestParam String branchName) {
-        return stService.searchStoreBranchName(branchName);
+    public ResponseEntity<Object> getStoreSearch(@RequestParam String storeName) {
+        return stService.searchStoreBranchName(storeName);
     }
 
 

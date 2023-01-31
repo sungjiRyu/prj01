@@ -10,15 +10,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.project1st.starbucks.admin.repository.MenuImageRepository;
+import com.project1st.starbucks.admin.repository.MenuNutritionRepository;
+import com.project1st.starbucks.menu.entity.MenuBasicInfoEntity;
 import com.project1st.starbucks.menu.entity.ProductCategoryEntity;
 import com.project1st.starbucks.menu.repository.MenuBasicInfoRepository;
+import com.project1st.starbucks.menu.repository.MenuQrRepository;
 import com.project1st.starbucks.menu.repository.ProductCategoryRepository;
+import com.project1st.starbucks.menu.vo.MenuDetailVO;
 import com.project1st.starbucks.menu.vo.ProductCategoryListVO;
 
 @Service
 public class CategoryService {
     @Autowired ProductCategoryRepository pcRepo;
     @Autowired MenuBasicInfoRepository mRepo;
+    @Autowired MenuQrRepository menuQrRepo;
+    @Autowired MenuImageRepository miRepo;
+    @Autowired MenuNutritionRepository nutritionRepo;
 
     // <전체 카테고리 조회하기> -> 완료 ♥
     public ResponseEntity<Object> categoryList() {
@@ -57,7 +65,7 @@ public class CategoryService {
         
         // 상위카테고리 조회시 하위카테고리 보여주기
         resultMap.put("status", true);
-        resultMap.put("message", "상위 카테고리 번호 " + pcSeq + "번의 하위 카테고리를 소개합니다.");
+        resultMap.put("message", "상위 카테고리 [" + pcRepo.findById(pcSeq).get().getPcName() + "] 의 하위 카테고리를 소개합니다.");
         resultMap.put("list", pcRepo.findByPcParentSeq(pcSeq));
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
         
@@ -81,13 +89,61 @@ public class CategoryService {
             return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
         }
         
-        // 상위카테고리 조회시 하위카테고리 보여주기
+        // 하위카테고리 조회시 존재하는 메뉴들 보여주기
+        List<MenuBasicInfoEntity> list = mRepo.findAll();
+        List<MenuDetailVO> menu = new ArrayList<MenuDetailVO>();
+        for(MenuBasicInfoEntity m : list) {
+            if(m.getMbiPcSeq()==pcSeq){
+                MenuDetailVO mVo = new MenuDetailVO(miRepo.findByMiiNumber(m), menuQrRepo.findByMqiMbiSeq(m.getMbiSeq()), nutritionRepo.findByMnMbiSeq(m.getMbiSeq()));
+                menu.add(mVo);
+            }
+        }
+
         resultMap.put("status", true);
-        resultMap.put("message", "하위 카테고리 번호 " + pcSeq + "번의 메뉴들을 소개합니다.");
-        resultMap.put("list", mRepo.findByMbiPcSeq(pcSeq));
+        resultMap.put("message", "하위 카테고리 [" + pcRepo.findById(pcSeq).get().getPcName() + "] 의 메뉴들을 소개합니다.");
+        resultMap.put("list", menu);
+        // resultMap.put("list", mRepo.findByMbiPcSeq(pcSeq));
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
 
 
+    // <상위 카테고리 내에서 검색하기>
+    public ResponseEntity<Object> searchMenuNameInCategory(Long parentSeq, String menuName) {
+        Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
+
+        List<MenuBasicInfoEntity> list = mRepo.findAll();
+        List<MenuDetailVO> result = new ArrayList<MenuDetailVO>();
+
+        //상위 카테고리 번호가 아닐때
+        if(pcRepo.findByPcParentSeq(parentSeq).isEmpty()) {
+            resultMap.put("status", false); 
+            resultMap.put("message", "상위카테고리 번호가 아닙니다."); 
+            return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
+        }
+
+        //상위 카테고리 번호일때 메뉴 찾기
+        for(MenuBasicInfoEntity m : list) {
+            if(m.getMbiName().contains(menuName) && pcRepo.findById(m.getMbiPcSeq()).get().getPcParentSeq()==parentSeq){
+                MenuDetailVO mVo = new MenuDetailVO(miRepo.findByMiiNumber(m), menuQrRepo.findByMqiMbiSeq(m.getMbiSeq()), nutritionRepo.findByMnMbiSeq(m.getMbiSeq()));
+                result.add(mVo);
+            }
+        }
+        // 메뉴가 없을시
+        if(result.isEmpty()) {
+            resultMap.put("status", false); 
+            resultMap.put("message", "존재하지 않는 메뉴명입니다."); 
+            return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
+        }
+        // 메뉴가 존재할시
+        else {
+            resultMap.put("totalProductCount", result.size());
+            resultMap.put("totalPage", (int)Math.ceil(result.size()/10.0));
+            resultMap.put("list", result);
+            resultMap.put("status", true); 
+            resultMap.put("message", "[" + menuName + "] 라는 키워드를 포함하는 [" + pcRepo.findById(parentSeq).get().getPcName() + "] 카테고리 내의 메뉴들을 조회했습니다."); 
+            return new ResponseEntity<>(resultMap, HttpStatus.CREATED);
+        }
+    }
+    
 
 }

@@ -12,7 +12,7 @@ public class MenuInfoVO {
     private Integer cost;
     private Integer status;
     private String explain;
-    private Integer categoryNo;
+    private Long categoryNo;
 
     public MenuInfoVO(MenuBasicInfoEntity entity) {
         this.menuNo = entity.getMbiSeq();

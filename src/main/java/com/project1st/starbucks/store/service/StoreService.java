@@ -14,19 +14,30 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.project1st.starbucks.admin.entity.MemberEntity;
+import com.project1st.starbucks.admin.entity.MenuImageEntity;
+import com.project1st.starbucks.admin.entity.MenuNutritionEntity;
 import com.project1st.starbucks.admin.repository.MemberInfoRepository;
-import com.project1st.starbucks.admin.repository.MenuRepository;
+import com.project1st.starbucks.admin.repository.MenuImageRepository;
+import com.project1st.starbucks.admin.repository.MenuNutritionRepository;
 import com.project1st.starbucks.menu.entity.MenuBasicInfoEntity;
-import com.project1st.starbucks.menu.entity.MenuOptionCategoryEntity;
 import com.project1st.starbucks.menu.entity.MenuOptionInfoEntity;
+import com.project1st.starbucks.menu.entity.MenuQrEntity;
+import com.project1st.starbucks.menu.entity.ProductCateOptionCateConnectionEntity;
+import com.project1st.starbucks.menu.entity.ProductCategoryEntity;
 import com.project1st.starbucks.menu.repository.MenuBasicInfoRepository;
 import com.project1st.starbucks.menu.repository.MenuOptionCategoryRepository;
 import com.project1st.starbucks.menu.repository.MenuOptionInfoRepository;
+import com.project1st.starbucks.menu.repository.MenuQrRepository;
+import com.project1st.starbucks.menu.repository.ProductCateOptionCateConnectionRepository;
+import com.project1st.starbucks.menu.repository.ProductCategoryRepository;
 import com.project1st.starbucks.menu.vo.MenuDetailOptionListVO;
+import com.project1st.starbucks.menu.vo.MenuDetailVO;
+import com.project1st.starbucks.menu.vo.MenuImageVO;
 import com.project1st.starbucks.menu.vo.MenuInfoVO;
 import com.project1st.starbucks.menu.vo.MenuOptionListVO;
 import com.project1st.starbucks.menu.vo.MenuOptionVO;
 import com.project1st.starbucks.menu.vo.MenuStockVO;
+import com.project1st.starbucks.menu.vo.ProductCategoryVO;
 import com.project1st.starbucks.store.entity.StoreBasicInfoEntity;
 import com.project1st.starbucks.store.entity.StoreMenuConnectEntity;
 import com.project1st.starbucks.store.repository.StoreBasicInfoRepository;
@@ -47,6 +58,11 @@ public class StoreService {
     @Autowired StoreMenuConnectRepository smRepo;
     @Autowired MenuOptionCategoryRepository optionCateRepo;
     @Autowired MenuOptionInfoRepository optionRepo;
+    @Autowired MenuImageRepository miRepo;
+    @Autowired MenuQrRepository menuQrRepo;
+    @Autowired ProductCategoryRepository pcRepo;
+    @Autowired ProductCateOptionCateConnectionRepository pcCateOptionCateRepo;
+    @Autowired MenuNutritionRepository nutritionRepo;
 
 
     // <내 지점 조회하기> -> 완료 ♥
@@ -79,7 +95,7 @@ public class StoreService {
     }
     
 
-    // <내 지점 수정하기> -> String 아닌 Time 으로 바꿔야함!!!!!!
+    // <내 지점 수정하기> -> 완료 ♥
     public ResponseEntity<Object> myStoreEdit(StoreEditVO storeInfoEdit, HttpSession session) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 
@@ -157,12 +173,12 @@ public class StoreService {
             Long storeSeq = findStore.getMiSbiSeq();
 
             List<StoreMenuConnectEntity> list = smRepo.findAll();
-            List<MenuInfoVO> result = new ArrayList<MenuInfoVO>();
+            List<MenuImageVO> result = new ArrayList<MenuImageVO>();
             StoreInfoVO store = null;
             for(StoreMenuConnectEntity m : list) {
                 if(m.getStore().getSbiSeq() == storeSeq && m.getMenu().getMbiName().contains(menuName)){ // param으로 받은 menuName으로 조회한 뒤
                     store = new StoreInfoVO(m.getStore());
-                    result.add(new MenuInfoVO(m.getMenu()));  // 포함되면 result에 넣기
+                    result.add(new MenuImageVO(miRepo.findByMiiNumber(m.getMenu())));  // 포함되면 result에 넣기
                 }
             }
 
@@ -186,7 +202,7 @@ public class StoreService {
 
 
     
-    // <내 지점에 등록된 메뉴 보여주기> -> 완료 ♥
+    // <내 지점에 등록된 메뉴 보여주기>
     public ResponseEntity<Object> storeMenuList(Pageable pageable, HttpSession session) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 
@@ -212,10 +228,10 @@ public class StoreService {
             resultMap.put("list", smRepo.findAll());
             List<StoreMenuConnectEntity> list = smRepo.findByStore(sRepo.findById(storeSeq).get(), pageable).getContent();
             StoreInfoVO store = null;
-            List<MenuInfoVO> menuList = new ArrayList<MenuInfoVO>();
+            List<MenuImageVO> menuList = new ArrayList<MenuImageVO>();
             for(StoreMenuConnectEntity s : list) {
                 store = new StoreInfoVO(s.getStore());
-                menuList.add(new MenuInfoVO(s.getMenu()));
+                menuList.add(new MenuImageVO(miRepo.findByMiiNumber(s.getMenu())));
             }
             resultMap.put("status", true);
             resultMap.put("message", store.getBranch() + "의 전체 메뉴 입니다.");
@@ -236,7 +252,7 @@ public class StoreService {
 
 
     // <내 지점에 특정 메뉴 상세보기> -> 완료 ♥
-    public ResponseEntity<Object> storeMenuDetail(HttpSession session, Long menuSeq) {
+    public ResponseEntity<Object> storeMenuDetail(HttpSession session, Long menuNo) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 
 
@@ -253,13 +269,14 @@ public class StoreService {
             resultMap.put("message", "점주 회원이 아닙니다.");
             return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
         } 
+
         // 점주라면 해당 지점 + 지점 상세 메뉴 보여주기
         else {
             Long storeSeq = findStore.getMiSbiSeq();
 
             // 메뉴 기존 테이블에 존재하지 않는 메뉴 검사
             Optional<StoreBasicInfoEntity> storeOptional =  sRepo.findById(storeSeq);
-            Optional<MenuBasicInfoEntity> menuOptional =  mRepo.findById(menuSeq);
+            Optional<MenuBasicInfoEntity> menuOptional =  mRepo.findById(menuNo);
             
             if(menuOptional.isEmpty()){
                 resultMap.put("status", false);
@@ -269,28 +286,58 @@ public class StoreService {
     
             // 연결테이블에 존재하지 않는 seq 검사
             StoreMenuConnectEntity smEntity = smRepo.findByStoreAndMenu(storeOptional.get(), menuOptional.get());
-            if((smEntity == null) || (smEntity.getStore().getSbiSeq() == storeSeq && smEntity.getMenu().getMbiSeq() != menuSeq)){
+            if((smEntity == null) || (smEntity.getStore().getSbiSeq() == storeSeq && smEntity.getMenu().getMbiSeq() != menuNo)){
                 resultMap.put("status", false);
-                resultMap.put("message", sRepo.findById(storeSeq).get().getSbiBranchName() + "에는 " + mRepo.findById(menuSeq).get().getMbiName() + " 메뉴가 존재하지 않습니다.");
+                resultMap.put("message", sRepo.findById(storeSeq).get().getSbiBranchName() + "에는 " + mRepo.findById(menuNo).get().getMbiName() + " 메뉴가 존재하지 않습니다.");
                 return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
             }
-    
-    
-            // 메뉴 상세보기
+
+            // 메뉴+옵션들이 표시되는 list 만들었고,,
+            MenuDetailOptionListVO optionData = new MenuDetailOptionListVO();
+
+            // 메뉴 상세를 optionData에 담기
+            MenuImageEntity menuImage = miRepo.findByMiiNumber(mRepo.findById(menuNo).get());
+            MenuQrEntity qr = menuQrRepo.findByMqiMbiSeq(menuNo);
+            MenuNutritionEntity nutrition = nutritionRepo.findByMnMbiSeq(menuNo);
+            MenuDetailVO result = new MenuDetailVO(menuImage, qr, nutrition);
+            optionData.setDetail(result);
+
+            // 메뉴 연결외래키로 메뉴카테고리 받아오고, 카테고리-옵션카테고리에서 옵션카테고리 받아오기
+            ProductCategoryEntity menuCategory = pcRepo.findById(result.getMenuCategorySeq()).get();
+            List<ProductCateOptionCateConnectionEntity> pcCateOptionCateConnect = pcCateOptionCateRepo.findByProductCategory(menuCategory);
+            List<MenuOptionListVO> optionAllList = new ArrayList<MenuOptionListVO>();
+
+            for(ProductCateOptionCateConnectionEntity p : pcCateOptionCateConnect){
+                MenuOptionListVO optionAll = new MenuOptionListVO();
+                optionAll.setOptionCategoryName(p.getMenuOpionCategory().getMocName());
+
+                List<MenuOptionInfoEntity> optionList = optionRepo.findAllByMoiMocSeq(p.getMenuOpionCategory().getMocSeq());
+                List<MenuOptionVO> options = new ArrayList<MenuOptionVO>();
+                for(MenuOptionInfoEntity m : optionList) {
+                    MenuOptionVO vo = new MenuOptionVO();
+                    vo.setOptionName(m.getMoiName());
+                    vo.setOptionCost(m.getMoiCost());
+                    options.add(vo);
+                }
+
+                // 이거 리스트로 받기
+                optionAll.setOption(options);
+                optionAllList.add(optionAll);
+            }
+            optionData.setOptions(optionAllList);
+
             resultMap.put("status", true);
             resultMap.put("message", smEntity.getStore().getSbiBranchName() + "의 " + smEntity.getMenu().getMbiName() + " 메뉴를 소개합니다.");
-            resultMap.put("list", smRepo.findByStoreAndMenu(sRepo.findById(storeSeq).get(), menuOptional.get()));
+            resultMap.put("MenuDetail", optionData);
             return new ResponseEntity<>(resultMap, HttpStatus.OK);
+
         }
-
-
-        
     }
     
 
 
      // <내 지점에 메뉴 등록하기> -> 완료 ♥ -> vo 써야하나?
-    public ResponseEntity<Object> insertStoreMenuList(Long menuSeq, HttpSession session) {
+    public ResponseEntity<Object> insertStoreMenuList(Long menuNo, HttpSession session) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 
 
@@ -313,7 +360,7 @@ public class StoreService {
 
             
             Optional<StoreBasicInfoEntity> store =  sRepo.findById(storeSeq);
-            Optional<MenuBasicInfoEntity> menu =  mRepo.findById(menuSeq);
+            Optional<MenuBasicInfoEntity> menu =  mRepo.findById(menuNo);
             
             
             if(menu.isEmpty()){
@@ -325,7 +372,7 @@ public class StoreService {
             
             // 중복검사 (연결테이블 내)
             StoreMenuConnectEntity smEntity = smRepo.findByStoreAndMenu(store.get(), menu.get());
-            if((smEntity != null) && ((smEntity.getStore().getSbiSeq() == storeSeq) && (smEntity.getMenu().getMbiSeq() == menuSeq))){
+            if((smEntity != null) && ((smEntity.getStore().getSbiSeq() == storeSeq) && (smEntity.getMenu().getMbiSeq() == menuNo))){
                 resultMap.put("status", false);
                 resultMap.put("message", smEntity.getStore().getSbiBranchName() + "에 " + smEntity.getMenu().getMbiName() + "번 메뉴는 이미 존재합니다.");
                 return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
@@ -334,7 +381,7 @@ public class StoreService {
             // 조건 만족시 메뉴 입력
             StoreMenuConnectEntity connEntity = StoreMenuConnectEntity.builder()
                 .store(sRepo.findById(storeSeq).get())
-                .menu(mRepo.findById(menuSeq).get()).build();
+                .menu(mRepo.findById(menuNo).get()).build();
             smRepo.save(connEntity);
             resultMap.put("status", true);
             resultMap.put("message", connEntity.getStore().getSbiBranchName() + "번 가게에 " + connEntity.getMenu().getMbiName() + "번 메뉴 등록이 완료되었습니다.");
@@ -348,7 +395,7 @@ public class StoreService {
 
 
     // <내 지점에 등록된 메뉴 삭제하기> -> 완료 ♥
-    public ResponseEntity< Map<String, Object> > deleteStoreMenuList(Long menuSeq, HttpSession session) {
+    public ResponseEntity< Map<String, Object> > deleteStoreMenuList(Long menuNo, HttpSession session) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 
 
@@ -370,7 +417,7 @@ public class StoreService {
             Long storeSeq = findStore.getMiSbiSeq();
             
             Optional<StoreBasicInfoEntity> store =  sRepo.findById(storeSeq);
-            Optional<MenuBasicInfoEntity> menu =  mRepo.findById(menuSeq);
+            Optional<MenuBasicInfoEntity> menu =  mRepo.findById(menuNo);
 
             // 애초에 존재하지 않는 메뉴
             if(menu.isEmpty()){
@@ -399,15 +446,16 @@ public class StoreService {
 
     
     // <지점명으로 가게 찾기> -> 완료 ♥
-    public ResponseEntity<Object> searchStoreBranchName(String branchName) {
+    public ResponseEntity<Object> searchStoreBranchName(String storeName) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 
         List<StoreBasicInfoEntity> list = sRepo.findAll();
-        List<StoreBasicInfoEntity> result = new ArrayList<StoreBasicInfoEntity>();
+        List<StoreInfoVO> result = new ArrayList<StoreInfoVO>();
 
         for(StoreBasicInfoEntity s : list) {
-            if(s.getSbiBranchName().contains(branchName)){ // param으로 받은 branchName 조회한 뒤
-                result.add(s);  // 포함되면 result에 넣기
+            if(s.getSbiBranchName().contains(storeName)){ // param으로 받은 branchName 조회한 뒤
+                StoreInfoVO m = new StoreInfoVO(s);
+                result.add(m);
             }
         }
 
@@ -423,16 +471,24 @@ public class StoreService {
             resultMap.put("totalPage", (int)Math.ceil(result.size()/10.0));
             resultMap.put("list", result);
             resultMap.put("status", true); 
-            resultMap.put("message", "[" + branchName + "] 키워드를 포함하는 지점들을 찾았습니다."); 
+            resultMap.put("message", "[" + storeName + "] 키워드를 포함하는 지점들을 찾았습니다."); 
             return new ResponseEntity<>(resultMap, HttpStatus.CREATED);
         }
     }
     
 
 
-    // <주문하기 창에서 선택한 지점의 메뉴 전체 보기> -> 완료 ♥
+    // <주문하기 창에서 선택한 지점의 메뉴 전체 보기>
     public ResponseEntity<Object> cartStoreMenuList(Long storeSeq, Pageable pageable) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
+
+        //존재하지 않는 가게 번호 시퀀스 처리
+        if(sRepo.findById(storeSeq).isEmpty()){
+            resultMap.put("status", false);
+            resultMap.put("message", "존재하지 않는 가게 번호입니다.");
+            return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
+        }
+
         // 가게 전체 메뉴 보여주기        
         resultMap.put("list", smRepo.findAll());
         List<StoreMenuConnectEntity> list = smRepo.findByStore(sRepo.findById(storeSeq).get(), pageable).getContent();
@@ -440,12 +496,11 @@ public class StoreService {
         List<MenuStockVO> menuList = new ArrayList<MenuStockVO>();
         for(StoreMenuConnectEntity s : list) {
             store = new StoreInfoVO(s.getStore());
-            menuList.add(new MenuStockVO(smRepo.findById(s.getStoreMenuNo()).get()));
+            menuList.add(new MenuStockVO(smRepo.findById(s.getSmcSeq()).get()));
         }
         resultMap.put("status", true);
         resultMap.put("message", store.getBranch() + "의 전체 메뉴 입니다.");
         resultMap.put("list", new storeMenuStockVO(store, menuList));
-
 
         //페이징 처리
         Page<StoreMenuConnectEntity> page = smRepo.findAll(pageable);
@@ -459,7 +514,7 @@ public class StoreService {
     
 
 
-    // <주문하기 창에서 선택한 지점의 메뉴 상세 보기>
+    // <주문하기 창에서 선택한 지점의 메뉴 상세 보기> -> 완료 ♥
     public ResponseEntity<Object> cartStoreMenuDetail(Long storeSeq, Long menuSeq) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
         
@@ -482,31 +537,43 @@ public class StoreService {
 
 
         // 메뉴+옵션들이 표시되는 list 만들었고,,
+        MenuDetailOptionListVO optionData = new MenuDetailOptionListVO();
 
-        List<MenuDetailOptionListVO> list = new ArrayList<MenuDetailOptionListVO>();
-        MenuDetailOptionListVO data = new MenuDetailOptionListVO();
-        // data.setDetail(mRepo.findById(menuSeq).get());
+        // 메뉴 상세를 optionData에 담기
+        MenuImageEntity menuImage = miRepo.findByMiiNumber(mRepo.findById(menuSeq).get());
+        MenuQrEntity qr = menuQrRepo.findByMqiMbiSeq(menuSeq);
+        MenuNutritionEntity nutrition = nutritionRepo.findByMnMbiSeq(menuSeq);
+        MenuDetailVO result = new MenuDetailVO(menuImage, qr, nutrition);
+        optionData.setDetail(result);
 
-        // List<MenuOptionCategoryEntity> optionCatelist = optionCateRepo.findAll();
-        // for(MenuOptionCategoryEntity m : optionCatelist) {
-        //     MenuOptionListVO data = new MenuOptionListVO();
-        //     data.setOptionCategoryName(m.getMocName()); // 상위 옵션 카테고리 이름을 설정
+        // 메뉴 연결외래키로 메뉴카테고리 받아오고, 카테고리-옵션카테고리에서 옵션카테고리 받아오기
+        ProductCategoryEntity menuCategory = pcRepo.findById(result.getMenuCategorySeq()).get();
+        
+        List<ProductCateOptionCateConnectionEntity> pcCateOptionCateConnect = pcCateOptionCateRepo.findByProductCategory(menuCategory);
+        List<MenuOptionListVO> optionAllList = new ArrayList<MenuOptionListVO>();
+
+        for(ProductCateOptionCateConnectionEntity p : pcCateOptionCateConnect){
+            MenuOptionListVO optionAll = new MenuOptionListVO();
+            optionAll.setOptionCategoryName(p.getMenuOpionCategory().getMocName());
             
-        //     // 상위 카테고리 번호로 설정된 차일드 카테고리 목록 가져오기
-        //     List<MenuOptionInfoEntity> childOptionList = optionRepo.findAllByMoiMocSeq(m.getMocSeq());
-        //     List<MenuOptionVO> OptionList= new ArrayList<MenuOptionVO>();
-        //     for(MenuOptionInfoEntity childOption : childOptionList) {
-        //         OptionList.add(childOption);
-        //     }
-        //     data.setOption(OptionList);
-        // }
+            List<MenuOptionInfoEntity> optionList = optionRepo.findAllByMoiMocSeq(p.getMenuOpionCategory().getMocSeq());
+            List<MenuOptionVO> options = new ArrayList<MenuOptionVO>();
+            for(MenuOptionInfoEntity m : optionList) {
+                MenuOptionVO vo = new MenuOptionVO();
+                vo.setOptionName(m.getMoiName());
+                vo.setOptionCost(m.getMoiCost());
+                options.add(vo);
+            }
 
-
-
-        // 메뉴 상세보기
+            // 이거 리스트로 받기
+            optionAll.setOption(options);
+            optionAllList.add(optionAll);
+        }
+        optionData.setOptions(optionAllList);
+            
         resultMap.put("status", true);
         resultMap.put("message", smEntity.getStore().getSbiBranchName() + "의 " + smEntity.getMenu().getMbiName() + " 메뉴를 소개합니다.");
-        resultMap.put("list", smRepo.findByStoreAndMenu(sRepo.findById(storeSeq).get(), menuOptional.get()));
+        resultMap.put("MenuDetail", optionData);
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
         
     }

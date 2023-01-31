@@ -31,4 +31,6 @@ public class EventEntity {
     @Column(name = "ev_start_date")     @DateTimeFormat(pattern = "yyyy-MM-dd") private LocalDate evStartDate; 
     @Column(name = "ev_end_date")       @DateTimeFormat(pattern = "yyyy-MM-dd") private LocalDate evEndDate;
     @Column(name = "ev_content")        private String evContent;
+    @Column(name = "ev_title")          private String evTitle;
+
 }

@@ -29,48 +29,19 @@ public class MenuService {
     @Autowired MenuImageRepository miRepo;
     @Autowired MenuBasicInfoRepository menuBasicRepo;
     @Value("${file.image.menuimage}") String menu_img_path;
-
     public void addMenu(
         String mbiName,
-        Long miiNumber,
         Integer mbiCost,
         String mbiExplain,
-        Long mbiPcSeq,
-        MultipartFile miiImgFile
+        Long mbiPcSeq
     ) {
-        Calendar c = Calendar.getInstance();
-        Path menuFolderLocation = Paths.get(menu_img_path);
-
-        String menuOriginFileName = miiImgFile.getOriginalFilename();
-        String[] iFile = menuOriginFileName.split(("\\."));
-        String iExt = iFile[iFile.length - 1];
-        String iFileName = "";
-        for (int i = 0; i < iFile.length - 1; i++) {
-            iFileName += iFile[i];
-        }
-        String saveMenuFileName = "Menu" + "_";
-        saveMenuFileName += c.getTimeInMillis() + "." + iExt;
-        Path menuTargetFile = menuFolderLocation.resolve(miiImgFile.getOriginalFilename());
-
-        try {
-            Files.copy(miiImgFile.getInputStream(), menuTargetFile, StandardCopyOption.REPLACE_EXISTING);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        MenuImageEntity menuimg = MenuImageEntity.builder()
-            .miiNumber(menuBasicRepo.findById(miiNumber).get())
-            .miiImgFile(saveMenuFileName)
-            .miiUri(iFileName).build();
-        menuimg = miRepo.save(menuimg);
-
         MenuEntity menu = MenuEntity.builder()
-            .mbiName(mbiName)
-            .mbiCost(mbiCost)
-            .mbiExplain(mbiExplain)
-            .mbiPcSeq(mbiPcSeq).build();
-
+        .mbiName(mbiName)
+        .mbiCost(mbiCost)
+        .mbiExplain(mbiExplain)
+        .mbiPcSeq(mbiPcSeq).build();
+        
+        System.out.println("qqq");
         menu = mRepo.save(menu);
     }
 

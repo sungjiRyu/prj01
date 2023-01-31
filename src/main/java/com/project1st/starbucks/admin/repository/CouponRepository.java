@@ -8,4 +8,5 @@ import com.project1st.starbucks.admin.entity.CouponEntity;
 
 public interface CouponRepository extends JpaRepository<CouponEntity, Long>{
     public Integer countByCiName(String ciName);
+    public Integer countByCiSeq(Long CiSeq);
 }

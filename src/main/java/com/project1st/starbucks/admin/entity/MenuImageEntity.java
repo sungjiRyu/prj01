@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 public class MenuImageEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mii_seq")           private Long miiSeq;
-    @OneToOne @JoinColumn(name = "mii_number")        private MenuBasicInfoEntity miiNumber;
+    @OneToOne @JoinColumn(name = "mii_number")        private MenuBasicInfoEntity miiNumber; //메뉴연결번호
     @Column(name = "mii_img_file")      private String miiImgFile;
     @Column(name = "mii_uri")           private String miiUri;
 }

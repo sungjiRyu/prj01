@@ -8,4 +8,5 @@ import com.project1st.starbucks.admin.entity.MenuNutritionEntity;
 @Repository
 public interface MenuNutritionRepository extends JpaRepository<MenuNutritionEntity, Long>{
     public Integer countByMnMbiSeq (Long mnMbiSeq);
+    MenuNutritionEntity findByMnMbiSeq(Long mnMbiSeq);
 }

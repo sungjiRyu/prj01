@@ -20,8 +20,8 @@ import lombok.NoArgsConstructor;
 public class ProductCateOptionCateConnectionEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "poc_seq")               private Long pocSeq;
-    // @Column(name = "poc_pc_seq")            private Long pocPcSeq;
     @OneToOne @JoinColumn(name = "poc_pc_seq")            ProductCategoryEntity productCategory;
-    // @Column(name = "poc_moc_seq")           private Long pocMocSeq;
     @OneToOne @JoinColumn(name = "poc_moc_seq")           MenuOptionCategoryEntity menuOpionCategory;
+    // @Column(name = "poc_pc_seq")            private Long pocPcSeq;
+    // @Column(name = "poc_moc_seq")           private Long pocMocSeq;
 }

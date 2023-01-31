@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class StoreEditVO {
-    private LocalTime storeOpenTime;
-    private LocalTime storeCloseTime;
+    private String storeOpenTime;
+    private String storeCloseTime;
     private String storeCloseDay;
     private Integer storeMinOrder;
     private String storePhone;

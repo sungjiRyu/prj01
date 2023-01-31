@@ -12,7 +12,6 @@ public class MainController {
         System.out.println("getMain()");
         model.addAttribute("info", "model Info");
         session.setAttribute("info2","session Info");
-
         return "/index";
     }
 }

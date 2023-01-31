@@ -19,6 +19,8 @@ import com.project1st.starbucks.admin.repository.EventDetailRepository;
 import com.project1st.starbucks.admin.repository.EventRepository;
 import com.project1st.starbucks.admin.repository.MemberRepository;
 
+import jakarta.transaction.Transactional;
+
 
 
 @Service
@@ -35,6 +37,7 @@ public class EventService {
             LocalDate evEndDate,
             LocalDate ediStartDate,
             LocalDate ediEndDate,
+            String evTitle,
             @Nullable String evContent,
             @Nullable String ediContent,
             MultipartFile evFile,
@@ -63,6 +66,7 @@ public class EventService {
                 .evStartDate(evStartDate)
                 .evEndDate(evEndDate)
                 .evContent(evContent)
+                .evTitle(evTitle)
                 .evUri(iFileName)
                 .evFile(saveEventFileName).build();
 
@@ -93,6 +97,11 @@ public class EventService {
                 .edFile(saveDetailFileName).build();
                 detail = detailRepo.save(detail);
     }
+
+    @Transactional
+    public void deleteStore(Long evSeq){
+        eventRepo.deleteById(evSeq);
+    }    
 }
     
 

@@ -7,21 +7,21 @@ import lombok.Data;
 @Data
 public class MenuStockVO {
     private Long menuNo;
-    private String name;
-    private Integer cost;
-    private Integer status;
-    private String explain;
-    private Integer categoryNo;
-    private Integer stock;
+    private String menuName;
+    private Integer menuCost;
+    private Integer menuStatus;
+    private String menuExplain;
+    private Long menuCategoryNo;
+    private Integer menuStock;
 
     public MenuStockVO(StoreMenuConnectEntity smEntity) {
         this.menuNo = smEntity.getMenu().getMbiSeq();
-        this.name = smEntity.getMenu().getMbiName();
-        this.cost = smEntity.getMenu().getMbiCost();
-        this.status = smEntity.getMenu().getMbiStatus();
-        this.explain = smEntity.getMenu().getMbiExplain();
-        this.categoryNo = smEntity.getMenu().getMbiPcSeq();
-        this.stock = smEntity.getStoreMenuStock();
+        this.menuName = smEntity.getMenu().getMbiName();
+        this.menuCost = smEntity.getMenu().getMbiCost();
+        this.menuStatus = smEntity.getMenu().getMbiStatus();
+        this.menuExplain = smEntity.getMenu().getMbiExplain();
+        this.menuCategoryNo = smEntity.getMenu().getMbiPcSeq();
+        this.menuStock = smEntity.getSmcMenuStock();
     }
 
 

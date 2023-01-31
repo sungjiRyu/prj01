@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel = "stylesheet" href="css/member.css">
+    <link rel = "stylesheet" href="css/addstore.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <nav id = "topMenu">
+        <ul>
+            <li><a class = "menuLink" href="main.html">메인</a></li>
+            <li><a class = "menuLink" href="member.html">회원관리</a>
+                <!-- <ul class = "sub" >
+                    <li><a href = "#">test1</a></li>
+                </ul> -->
+            </li>
+            <li><a class = "menuLink" href="store.html">지점관리</a></li>
+            <li><a class = "menuLink" href="notice.html">공지사항등록</a></li>
+            <li><a class = "menuLink" href="event.html">이벤트등록</a></li>
+            <li><a class = "menuLink" href="menu.html">메뉴등록</a></li>
+        </ul>
+    </nav>
+
+    <div action="#" id = "inputData">
+        <h3>지점명</h3>
+        <input type = 'text' id = "storeName1" placeholder="지점명을 입력하세요">
+        <h3>주소</h3>
+        <input type = 'text' id = "storeAddress1" placeholder="주소를 입력하세요"><span>~</span>
+        <input type = 'text' id = "storeDetailAddress1" placeholder="상세주소를 입력하세요">
+        <h3>영업시간</h3>
+        <input type = 'time' id = "openHour1" placeholder="openHour">
+        <span>~</span>
+        <input type = 'time' id = "closeHour1" placeholder="closeHour">
+        <h3>휴무일</h3>
+        <input type = 'date' id = "closeDay1" placeholder="휴무일">
+        <h3>최소주문금액</h3>
+        <input type = 'number' id = "minOrderPrice1" placeholder="최소주문금액">
+        <h3>점주명</h3>
+        <input type = 'text' id = "managerName1" placeholder="점주명">
+        <h3>사업자번호</h3>
+        <input type = 'text' id = "businessNum1" placeholder="사업자번호">
+        <h3>휴대폰번호</h3>
+        <input type = 'text' id = "phoneNum1" placeholder="휴대폰 번호">
+        <h3>배달시간</h3>
+        <input type = 'text' id = "minTime1" placeholder="최소배달시간"> <span>~</span> 
+        <input type = 'text' id = "maxTime1" placeholder="최대배달시간">
+        <br>
+        <br>
+        <input type="submit" id="save" value="등록" onclick="addStore();">
+    </div>
+
+<script>
+
+document.getElementById("inputData").addEventListener("submit", function(event){
+    event.preventDefault();
+})
+// http://haeji.mawani.kro.kr:9999/admin/store
+function addStore(){
+axios({
+                url: "http://localhost:9999/admin/store", // 가게추가
+                method: 'post', // 통신할 방식
+                datatype : "JSON",
+                params: {
+                    sbiBranchName : document.getElementById('storeName1').value,
+                    sbiAddressBasic : document.getElementById('storeAddress1').value,
+                    sbiAddressDetail : document.getElementById('storeDetailAddress1').value,
+                    sbiOpenTime : document.getElementById('openHour1').value,
+                    sbiCloseTime : document.getElementById('closeHour1').value,
+                    sbiCloseDay : document.getElementById('closeDay1').value,
+                    sbiMinOrder : document.getElementById('minOrderPrice1').value,
+                    sbiCeoName : document.getElementById('managerName1').value,
+                    sbiBusinessAddress : document.getElementById('businessNum1').value,
+                    sbiPhone : document.getElementById('phoneNum1').value,
+                    sbiMinDeliveryTime : document.getElementById('minTime1').value,
+                    sbiMaxDeliveryTime : document.getElementById('maxTime1').value
+                }   
+    })
+    .then(function(response){
+      alert(response.data.message)
+      console.log(response)  
+    })
+    .catch(function(err){
+        alert(err.response.message)
+        console.lot(err.response.data.message)
+    });
+}
+    </script>
+</body>
+</html>

@@ -26,5 +26,5 @@ public class MenuBasicInfoEntity {
     @Column(name = "mbi_cost")          private Integer mbiCost;    
     @Column(name = "mbi_status")        @ColumnDefault("1")     private Integer mbiStatus;
     @Column(name = "mbi_explain")       private String mbiExplain;
-    @Column(name = "mbi_pc_seq")        private Integer mbiPcSeq;
+    @Column(name = "mbi_pc_seq")        private Long mbiPcSeq;
 }

@@ -29,7 +29,7 @@ public interface MemberInfoRepository extends JpaRepository <MemberEntity, Long>
     MemberEntity findByMiSeq(Long miSeq);
 
      // 이름과 전화번호 (아이디 찾기 본인인증 메소드에 사용)
-   MemberEntity findByMiNameAndMiPhoneNum(String miName, String miPhoneNum );
+    MemberEntity findByMiNameAndMiPhoneNum(String miName, String miPhoneNum );
 
     // 전화번호로 회원정보 불러오기(아이디찾기 메소드에 사용)
     MemberEntity findByMiPhoneNum(String miPhoneNum);
@@ -39,4 +39,7 @@ public interface MemberInfoRepository extends JpaRepository <MemberEntity, Long>
 
     // 이름으로 회원정보 찾기
     MemberEntity findByMiName(String MiNAme);
+
+   
+
 }
