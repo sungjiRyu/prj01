@@ -3,7 +3,6 @@ package com.project1st.starbucks.menu.vo;
 import com.project1st.starbucks.admin.entity.MenuImageEntity;
 import com.project1st.starbucks.admin.entity.MenuNutritionEntity;
 import com.project1st.starbucks.menu.entity.MenuQrEntity;
-import com.project1st.starbucks.store.entity.StoreMenuConnectEntity;
 
 import lombok.Data;
 
@@ -33,7 +32,7 @@ public class MenuDetailVO {
         this.menuFile = image.getMiiImgFile();
         this.menuUri = "http://haeji.mawani.kro.kr:9999/image/menu/" + image.getMiiUri();
         this.menuQrFile = qr.getMqiImageFile();
-        this.menuQrUri = "http://haeji.mawani.kro.kr:9999/QR/image/" + qr.getMqiUri();
+        this.menuQrUri = "http://haeji.mawani.kro.kr:9999/image/menuqr/" + qr.getMqiUri();
         this.menuNutritionFile = nutrition.getMnImgFile();
         this.menuNutritionUri = "http://haeji.mawani.kro.kr:9999/image/nutri/" + nutrition.getMnUri();
     }

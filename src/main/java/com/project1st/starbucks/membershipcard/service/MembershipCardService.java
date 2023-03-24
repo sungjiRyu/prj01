@@ -33,6 +33,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.project1st.starbucks.admin.entity.MemberEntity;
+import com.project1st.starbucks.admin.repository.MemberRepository;
 import com.project1st.starbucks.membershipcard.entity.MembershipCardEntity;
 import com.project1st.starbucks.membershipcard.entity.MembershipCardImageEntity;
 import com.project1st.starbucks.membershipcard.entity.MembershipCardQREntity;
@@ -47,16 +48,17 @@ import jakarta.servlet.http.HttpSession;
 
 @Service
 public class MembershipCardService {
+    @Autowired MemberRepository memberRepo;
     @Autowired MembershipCardRepository cardRepo;
     @Autowired MembershipCardImageRepository cardImageRepo;
     @Autowired MembershipcardQRRepository cardQRRepo;
     @Value("${file.image.cardqr}") String qr_card_img_path;
 
-    //카드생성 -> 완료 ♥ -> 진혁이 서버에서 돌아가는지 확인
-    public ResponseEntity<Object> createNewMembershipCard(MembershipCardEntity data, HttpSession session) throws Exception {
+    //카드 + 카드 QR이미지 생성 -> 완료 ♥
+    public ResponseEntity<Object> createNewMembershipCard(MembershipCardEntity data, Long memberNo) throws Exception {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
         // 세션으로 로그인 정보 불러오기
-        MemberEntity memberInfo = (MemberEntity) session.getAttribute("loginUser");
+        MemberEntity memberInfo = memberRepo.findByMiSeq(memberNo);
         if (memberInfo == null) {
             resultMap.put("status", false);
             resultMap.put("message", "멤버십 카드 생성을 위해 로그인 해주세요.");
@@ -73,22 +75,22 @@ public class MembershipCardService {
         data.setCardMiSeq(memberInfo.getMiSeq());
         cardRepo.save(data);
         
-        
         // 멤버십 카드 생성과 동시에 멤버십카드 충전 QR코드가 생성
-        String source = "http://haeji.mawani.kro.kr:9999/card/charge";
-        // String path = "D:\\home\\starbucks\\image\\cardqr\\MembershipCARD_MemberNo_" + data.getCardMiSeq() + ".jpg";
-        String path = "/home/starbucks/image/cardqr/MembershipCARD_MemberNo_" + data.getCardMiSeq() + ".jpg";
+        Path cardqrLocation = Paths.get(qr_card_img_path);
+        // String source = "http://192.168.0.55:3000/qrmob?miSeq=" + memberNo;
+        String source = "http://haeji.mawani.kro.kr:3389/qrmob?miSeq=" + memberNo;
+        // String path = "/home/starbucks/image/cardqr/MembershipCard_MemberNo_" + data.getCardMiSeq() + ".jpg";
+        String path = cardqrLocation + "/MembershipCard_MemberNo_" + data.getCardMiSeq() + ".jpg";
         String charset = "UTF-8";
         Map<EncodeHintType, ErrorCorrectionLevel> hashMap = new HashMap<EncodeHintType, ErrorCorrectionLevel>();
         hashMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
         createQR(source, path, charset, hashMap, 200, 200);
 
         MembershipCardQREntity qrdata = MembershipCardQREntity.builder()
-            .cardqrFile(data.getCardName() + data.getCardMiSeq() + ".jpg")
-            .cardqrUri(data.getCardName() + data.getCardMiSeq())
+            .cardqrFile("MembershipCard_MemberNo_" + data.getCardMiSeq() + ".jpg")
+            .cardqrUri("MembershipCard_MemberNo_" + data.getCardMiSeq())
             .cardqrMiSeq(memberInfo.getMiSeq()).build();
         qrdata = cardQRRepo.save(qrdata);
-        
 
         resultMap.put("status", true);
         resultMap.put("message", "카드 등록이 완료되었습니다.");
@@ -96,7 +98,7 @@ public class MembershipCardService {
     }
 
 
-    //QR코드 생성 메서드
+    //QR코드 생성 메서드 -> 완료 ♥
     public static void createQR(String source, String path, String charset, Map hashMap,  int height, int width) throws WriterException, IOException {
         BitMatrix matrix = new MultiFormatWriter().encode(
         new String(source.getBytes(charset), charset),
@@ -106,7 +108,7 @@ public class MembershipCardService {
     }
 
 
-     // 카드 이미지 다운로드 하기
+     // 카드 이미지 다운로드 하기 -> 완료 ♥
     public ResponseEntity<Resource> getCardQRImage (@PathVariable String uri, HttpServletRequest request) throws Exception {
         String filename = null;
         Path folderLocation = null;
@@ -137,7 +139,7 @@ public class MembershipCardService {
     }
 
     
-    // 파일명 가져오기
+    // 파일명 가져오기 -> 완료 ♥
     public String getFilenameByUri(String uri) {
         // List<MembershipCardQREntity> data = cardQRRepo.findTopByCardqrUriOrderByCardqrSeqDesc(uri);
         return (cardQRRepo.findTopByCardqrUriOrderByCardqrSeqDesc(uri)).getCardqrFile();
@@ -146,11 +148,11 @@ public class MembershipCardService {
 
 
 
-    //카드충전 (QR코드 인식 후) -> vo써야하나?????!!!!!!
-    public ResponseEntity<Object> chargeMembershipCard(Integer money, HttpSession session){
+    //카드충전 (QR코드 인식 후) -> 완료 ♥
+    public ResponseEntity<Object> chargeMembershipCard(Integer money, Long memberNo){
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
         // 세션으로 로그인 정보 불러오기
-        MemberEntity memberInfo = (MemberEntity) session.getAttribute("loginUser");
+        MemberEntity memberInfo = memberRepo.findByMiSeq(memberNo);
         if (memberInfo == null) {
             resultMap.put("status", false);
             resultMap.put("message", "멤버십 카드 충전을 위해 로그인 해주세요.");
@@ -172,11 +174,11 @@ public class MembershipCardService {
     }
     
     
-    //카드조회 
-    public ResponseEntity<Object> detailMembershipCard(HttpSession session){
+    //카드조회  -> 완료 ♥
+    public ResponseEntity<Object> detailMembershipCard(Long memberNo){
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
         // 세션으로 로그인 정보 불러오기
-        MemberEntity memberInfo = (MemberEntity) session.getAttribute("loginUser");
+        MemberEntity memberInfo = memberRepo.findByMiSeq(memberNo);
         if (memberInfo == null) {
             resultMap.put("status", false);
             resultMap.put("message", "멤버십 카드 조회를 위해 로그인 해주세요.");
@@ -201,11 +203,11 @@ public class MembershipCardService {
     }
 
 
-    //카드삭제 -> 완료 ♥ -> deleteVO 쓰는 방법?????!!!!!
-    public ResponseEntity<Object> deleteMembershipCard(HttpSession session){
+    //카드삭제 -> 완료 ♥
+    public ResponseEntity<Object> deleteMembershipCard(Long memberNo){
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
         // 세션으로 로그인 정보 불러오기
-        MemberEntity memberInfo = (MemberEntity) session.getAttribute("loginUser");
+        MemberEntity memberInfo = memberRepo.findByMiSeq(memberNo);
         if (memberInfo == null) {
             resultMap.put("status", false);
             resultMap.put("message", "멤버십 카드 삭제를 위해 로그인 해주세요.");
@@ -219,13 +221,15 @@ public class MembershipCardService {
         }
         // 카드에 잔액이 존재한다면 에러뜨기
         MembershipCardEntity cardEntity = cardRepo.findByCardMiSeq(memberInfo.getMiSeq());
-        if(cardEntity.getCardMoney() != 0) {
-            resultMap.put("status", false);
-            resultMap.put("message", "멤버십 카드에 잔액이 존재합니다.");
-            return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
-        }
+        // if(cardEntity.getCardMoney() != 0) {
+        //     resultMap.put("status", false);
+        //     resultMap.put("message", "멤버십 카드에 잔액이 존재합니다.");
+        //     return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
+        // }
+        MembershipCardQREntity cardQrEntity = cardQRRepo.findByCardqrMiSeq(memberNo);
         // 로그인했다면 멤버십카드 삭제하기
         cardRepo.delete(cardEntity);
+        cardQRRepo.delete(cardQrEntity);
         resultMap.put("status", true);
         resultMap.put("message", "멤버십 카드가 삭제되었습니다.");
         return new ResponseEntity<>(resultMap, HttpStatus.OK);

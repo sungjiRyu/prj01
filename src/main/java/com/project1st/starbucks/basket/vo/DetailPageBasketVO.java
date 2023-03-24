@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class DetailPageBasketVO {
+    private Long miSeq;
     private ShoppingBasketVO shoppingBasketVo;
     private List<ShoppingBasketOptionVO> shoppingBasketOption;
 }

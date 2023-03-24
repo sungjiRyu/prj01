@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.project1st.starbucks.admin.entity.MemberEntity;
+import com.project1st.starbucks.member.DTO.GetLoginUserInfoDTO;
 
 
 
@@ -22,11 +23,14 @@ public interface MemberInfoRepository extends JpaRepository <MemberEntity, Long>
     MemberEntity findByMiIdAndMiPwd(String miId, String miPwd);
     // MemberEntity findByUserIdAndUserPwd(String id, String pwd);
 
-    // 현재 로그인한 사용자 아이디와 일치하는 사용자 정보 출력 ( 로그인 사용자 정보 조회 )
-    MemberEntity findByMiId(String miId);
-    
+    // 로그인 사용자정보 DTO에 담아서 보내줌(비밀번호는 빼고)
+    GetLoginUserInfoDTO findByMiId(String miId);
+
     // 로그인한 회원 miSeq에 해당하는 정보 출력 
-    MemberEntity findByMiSeq(Long miSeq);
+    // GetLoginUserInfoDTO findByMiSeq(Long miSeq);
+
+    // 
+    MemberEntity findByMiSeq(Long miseq);
 
      // 이름과 전화번호 (아이디 찾기 본인인증 메소드에 사용)
     MemberEntity findByMiNameAndMiPhoneNum(String miName, String miPhoneNum );
@@ -40,6 +44,9 @@ public interface MemberInfoRepository extends JpaRepository <MemberEntity, Long>
     // 이름으로 회원정보 찾기
     MemberEntity findByMiName(String MiNAme);
 
-   
+    
+    
+
+    
 
 }

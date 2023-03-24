@@ -33,7 +33,7 @@ import lombok.Setter;
 @Builder
 @Table(name = "shopping_basket")
 // @JsonIdentityInfo(generator = IntSequenceGenerator.class, property = "id")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
 public class ShoppingBasketEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sb_seq") private Long sbSeq;
@@ -43,13 +43,15 @@ public class ShoppingBasketEntity {
     @Column(name = "sb_receive") private String sbReceive;
     @Column(name = "sb_payment") private Long sbPayment;
     @Column(name = "sb_number") private Long sbNumber;
+    @Column(name = "sb_menu_image_name") private String menuImageName;
+    @Column(name = "sb_menu_image_uri") private String menuImageUri;
     @OneToOne
     @JoinColumn(name = "sb_smc_seq") StoreMenuConnectEntity storeMenuConnect;    
     // @Column(name = "sb_smc_seq") private Long sbSmcSeq;
     @Column(name = "sb_mi_seq") private Long sbMiSeq;
     @Column(name = "sb_order_number") private Integer sbOrderNumber;
-
-
+    @Column(name = "sb_basket_price") private Long sbBasketPrice;
+    @Column(name = "sb_menu_total_price") private Long optionIncludePrice;
 
     @OneToMany(mappedBy = "shoppingBasket", cascade = CascadeType.ALL)
     private List<ShoppingBasketOptionEntity> shoppingBasketOption;

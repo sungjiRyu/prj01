@@ -10,13 +10,13 @@ import lombok.NoArgsConstructor;
 public class MembershipCardDeleteVO {
     private String cardNo;
     private String cardName;
-    private String cardMoney;
+    private String money;
     private String cardUserNo;
 
     public void copyData(MembershipCardDeleteVO data) {
         if(data.cardNo != null)   this.cardNo = data.getCardNo();
         if(data.cardName != null)   this.cardName = data.getCardName();
-        if(data.cardMoney != null)   this.cardMoney = data.getCardMoney();
+        if(data.money != null)   this.money = data.getMoney();
         if(data.cardUserNo != null)   this.cardUserNo = data.getCardUserNo();
     }
 

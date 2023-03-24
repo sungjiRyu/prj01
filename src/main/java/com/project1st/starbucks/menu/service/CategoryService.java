@@ -102,7 +102,6 @@ public class CategoryService {
         resultMap.put("status", true);
         resultMap.put("message", "하위 카테고리 [" + pcRepo.findById(pcSeq).get().getPcName() + "] 의 메뉴들을 소개합니다.");
         resultMap.put("list", menu);
-        // resultMap.put("list", mRepo.findByMbiPcSeq(pcSeq));
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
 

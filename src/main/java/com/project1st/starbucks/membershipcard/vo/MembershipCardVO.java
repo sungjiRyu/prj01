@@ -12,14 +12,14 @@ import lombok.NoArgsConstructor;
 public class MembershipCardVO {
     private Long cardNo;
     private String cardName;
-    private Integer cardMoney;
+    private Integer money;
     private Long cardUserNo;
 
 
     public MembershipCardVO (MembershipCardEntity cardEntity) {
         this.cardNo = cardEntity.getCardSeq();
         this.cardName = cardEntity.getCardName();
-        this.cardMoney = cardEntity.getCardMoney();
+        this.money = cardEntity.getCardMoney();
         this.cardUserNo = cardEntity.getCardMiSeq();
     }
 }

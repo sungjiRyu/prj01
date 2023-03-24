@@ -19,6 +19,7 @@ import com.project1st.starbucks.admin.entity.MenuNutritionEntity;
 import com.project1st.starbucks.admin.repository.MemberInfoRepository;
 import com.project1st.starbucks.admin.repository.MenuImageRepository;
 import com.project1st.starbucks.admin.repository.MenuNutritionRepository;
+import com.project1st.starbucks.admin.repository.StoreImageRepository;
 import com.project1st.starbucks.menu.entity.MenuBasicInfoEntity;
 import com.project1st.starbucks.menu.entity.MenuOptionInfoEntity;
 import com.project1st.starbucks.menu.entity.MenuQrEntity;
@@ -36,7 +37,7 @@ import com.project1st.starbucks.menu.vo.MenuImageVO;
 import com.project1st.starbucks.menu.vo.MenuInfoVO;
 import com.project1st.starbucks.menu.vo.MenuOptionListVO;
 import com.project1st.starbucks.menu.vo.MenuOptionVO;
-import com.project1st.starbucks.menu.vo.MenuStockVO;
+import com.project1st.starbucks.menu.vo.MenuStockDetailVO;
 import com.project1st.starbucks.menu.vo.ProductCategoryVO;
 import com.project1st.starbucks.store.entity.StoreBasicInfoEntity;
 import com.project1st.starbucks.store.entity.StoreMenuConnectEntity;
@@ -45,14 +46,13 @@ import com.project1st.starbucks.store.repository.StoreMenuConnectRepository;
 import com.project1st.starbucks.store.vo.StoreEditVO;
 import com.project1st.starbucks.store.vo.StoreInfoVO;
 import com.project1st.starbucks.store.vo.StoreMenuAddVO;
+import com.project1st.starbucks.store.vo.StoreMenuDetailVO;
 import com.project1st.starbucks.store.vo.StoreMenuVO;
-import com.project1st.starbucks.store.vo.storeMenuStockVO;
-
-import jakarta.servlet.http.HttpSession;
 
 @Service
 public class StoreService {
     @Autowired StoreBasicInfoRepository sRepo;
+    @Autowired StoreImageRepository sImageRepo;
     @Autowired MenuBasicInfoRepository mRepo;
     @Autowired MemberInfoRepository memberRepo;
     @Autowired StoreMenuConnectRepository smRepo;
@@ -66,18 +66,21 @@ public class StoreService {
 
 
     // <내 지점 조회하기> -> 완료 ♥
-    public ResponseEntity<Object> myStoreInfo(HttpSession session) {
+    public ResponseEntity<Object> myStoreInfo(Long memberNo) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 
         // 세션으로 로그인 정보 불러오기
-        MemberEntity findStore = (MemberEntity)session.getAttribute("loginUser");
-        if (findStore == null) {
-            resultMap.put("status", false);
-            resultMap.put("message", "내 지점 조회를 위해 점주 로그인을 해주세요.");
-            return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
-        }
+        MemberEntity findStore = memberRepo.findByMiSeq(memberNo);
+        /*     if (findStore == null) {
+        //     resultMap.put("status", false);
+        //     resultMap.put("message", "내 지점 메뉴 검색을 위해 점주 로그인을 해주세요.");
+        //     return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
+        // } */
+
         // 로그인 정보가 점주인가 아닌가
-        else if(findStore.getMiGroup() != 2){
+        System.out.println(findStore.getMiGroup());
+
+        if(findStore.getMiGroup() != 2){
             resultMap.put("status", false);
             resultMap.put("message", "점주 회원이 아닙니다.");
             return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
@@ -85,29 +88,23 @@ public class StoreService {
         // 점주라면 해당 지점보여주기
         else {
             Long storeSeq = findStore.getMiSbiSeq();
-
             resultMap.put("status", true);
             resultMap.put("message", findStore.getMiName() + " 점주님의 지점입니다.");
-            resultMap.put("list", new StoreInfoVO(sRepo.findById(storeSeq).get()));
-    
+            resultMap.put("list", new StoreInfoVO(sRepo.findById(storeSeq).get(), sImageRepo.findBySiNumber(sRepo.findById(storeSeq).get().getSbiSeq())));
             return new ResponseEntity<>(resultMap, HttpStatus.OK);
         }
     }
     
 
     // <내 지점 수정하기> -> 완료 ♥
-    public ResponseEntity<Object> myStoreEdit(StoreEditVO storeInfoEdit, HttpSession session) {
+    public ResponseEntity<Object> myStoreEdit(StoreEditVO storeInfoEdit, Long memberNo) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 
         // 세션으로 로그인 정보 불러오기
-        MemberEntity findStore = (MemberEntity)session.getAttribute("loginUser");
-        if (findStore == null) {
-            resultMap.put("status", false);
-            resultMap.put("message", "내 지점 수정을 위해 점주 로그인을 해주세요.");
-            return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
-        }
+        MemberEntity findStore = memberRepo.findByMiSeq(memberNo);
+        
         // 로그인 정보가 점주인가 아닌가
-        else if(findStore.getMiGroup() != 2){
+        if(findStore.getMiGroup() != 2){
             resultMap.put("status", false);
             resultMap.put("message", "점주 회원이 아닙니다.");
             return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
@@ -115,9 +112,7 @@ public class StoreService {
         // 점주라면 해당 지점 수정하기
         else {
             Long storeSeq = findStore.getMiSbiSeq();
-
             StoreBasicInfoEntity storeInfo = sRepo.findById(storeSeq).get();
-            
             if (storeInfo != null) {
                 if (storeInfoEdit.getStoreOpenTime() != null) {
                     storeInfo.setSbiOpenTime(storeInfoEdit.getStoreOpenTime());
@@ -145,25 +140,20 @@ public class StoreService {
                 resultMap.put("message", "지점 정보가 수정되었습니다.");
             }
             return new ResponseEntity<>(resultMap, HttpStatus.OK);
-
         }
     }
 
 
 
     // <내 지점에 등록된 메뉴 검색하기> -> 완료 ♥
-    public ResponseEntity<Object> storeMenuSearch(String menuName, HttpSession session) {
+    public ResponseEntity<Object> storeMenuSearch(String menuName, Long memberNo) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 
         // 세션으로 로그인 정보 불러오기
-        MemberEntity findStore = (MemberEntity)session.getAttribute("loginUser");
-        if (findStore == null) {
-            resultMap.put("status", false);
-            resultMap.put("message", "내 지점 메뉴 검색을 위해 점주 로그인을 해주세요.");
-            return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
-        }
+        MemberEntity findStore = memberRepo.findByMiSeq(memberNo);
+        
         // 로그인 정보가 점주인가 아닌가
-        else if(findStore.getMiGroup() != 2){
+        if(findStore.getMiGroup() != 2){
             resultMap.put("status", false);
             resultMap.put("message", "점주 회원이 아닙니다.");
             return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
@@ -177,7 +167,7 @@ public class StoreService {
             StoreInfoVO store = null;
             for(StoreMenuConnectEntity m : list) {
                 if(m.getStore().getSbiSeq() == storeSeq && m.getMenu().getMbiName().contains(menuName)){ // param으로 받은 menuName으로 조회한 뒤
-                    store = new StoreInfoVO(m.getStore());
+                    store = new StoreInfoVO(m.getStore(), sImageRepo.findBySiNumber(m.getStore().getSbiSeq()));
                     result.add(new MenuImageVO(miRepo.findByMiiNumber(m.getMenu())));  // 포함되면 result에 넣기
                 }
             }
@@ -202,19 +192,15 @@ public class StoreService {
 
 
     
-    // <내 지점에 등록된 메뉴 보여주기>
-    public ResponseEntity<Object> storeMenuList(Pageable pageable, HttpSession session) {
+    // <내 지점에 등록된 메뉴 보여주기> -> 완료 ♥
+    public ResponseEntity<Object> storeMenuList(Pageable pageable, Long memberNo) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 
         // 세션으로 로그인 정보 불러오기
-        MemberEntity findStore = (MemberEntity)session.getAttribute("loginUser");
-        if (findStore == null) {
-            resultMap.put("status", false);
-            resultMap.put("message", "내 지점 메뉴 전체조회를 위해 점주 로그인을 해주세요.");
-            return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
-        }
+        MemberEntity findStore = memberRepo.findByMiSeq(memberNo);
+        
         // 로그인 정보가 점주인가 아닌가
-        else if(findStore.getMiGroup() != 2){
+        if(findStore.getMiGroup() != 2){
             resultMap.put("status", false);
             resultMap.put("message", "점주 회원이 아닙니다.");
             return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
@@ -223,25 +209,22 @@ public class StoreService {
         else {
             Long storeSeq = findStore.getMiSbiSeq();
 
-    
             // 가게 메뉴 보여주기        
             resultMap.put("list", smRepo.findAll());
             List<StoreMenuConnectEntity> list = smRepo.findByStore(sRepo.findById(storeSeq).get(), pageable).getContent();
             StoreInfoVO store = null;
             List<MenuImageVO> menuList = new ArrayList<MenuImageVO>();
             for(StoreMenuConnectEntity s : list) {
-                store = new StoreInfoVO(s.getStore());
+                store = new StoreInfoVO(s.getStore(), sImageRepo.findBySiNumber(s.getStore().getSbiSeq()));
                 menuList.add(new MenuImageVO(miRepo.findByMiiNumber(s.getMenu())));
             }
             resultMap.put("status", true);
-            resultMap.put("message", store.getBranch() + "의 전체 메뉴 입니다.");
+            resultMap.put("message", store.getBranchName() + "의 전체 메뉴 입니다.");
             resultMap.put("list", new StoreMenuVO(store, menuList));
-    
 
             //페이징 처리
             Page<StoreMenuConnectEntity> page = smRepo.findAll(pageable);
             resultMap.put("totalPage", page.getTotalPages());
-            resultMap.put("MenuTotalCount", (page.getTotalElements()) -2);
             resultMap.put("currentPage", page.getNumber());
     
             return new ResponseEntity<>(resultMap, HttpStatus.OK);
@@ -251,13 +234,12 @@ public class StoreService {
     
 
 
-    // <내 지점에 특정 메뉴 상세보기> -> 완료 ♥
-    public ResponseEntity<Object> storeMenuDetail(HttpSession session, Long menuNo) {
+    // <내 지점에 특정 메뉴 상세보기> 
+    public ResponseEntity<Object> storeMenuDetail(Long memberNo, Long menuNo) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 
-
         // 세션으로 로그인 정보 불러오기
-        MemberEntity findStore = (MemberEntity)session.getAttribute("loginUser");
+        MemberEntity findStore = memberRepo.findByMiSeq(memberNo);
         if (findStore == null) {
             resultMap.put("status", false);
             resultMap.put("message", "내 지점 메뉴 상세조회를 위해 점주 로그인을 해주세요.");
@@ -301,6 +283,7 @@ public class StoreService {
             MenuNutritionEntity nutrition = nutritionRepo.findByMnMbiSeq(menuNo);
             MenuDetailVO result = new MenuDetailVO(menuImage, qr, nutrition);
             optionData.setDetail(result);
+            optionData.setSbSmcSeq(smRepo.findByStoreAndMenu(sRepo.findById(storeSeq).get(), mRepo.findById(menuNo).get()).getSmcSeq());
 
             // 메뉴 연결외래키로 메뉴카테고리 받아오고, 카테고리-옵션카테고리에서 옵션카테고리 받아오기
             ProductCategoryEntity menuCategory = pcRepo.findById(result.getMenuCategorySeq()).get();
@@ -337,19 +320,14 @@ public class StoreService {
 
 
      // <내 지점에 메뉴 등록하기> -> 완료 ♥ -> vo 써야하나?
-    public ResponseEntity<Object> insertStoreMenuList(Long menuNo, HttpSession session) {
+    public ResponseEntity<Object> insertStoreMenuList(Long menuNo, Long memberNo) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 
-
         // 세션으로 로그인 정보 불러오기
-        MemberEntity findStore = (MemberEntity)session.getAttribute("loginUser");
-        if (findStore == null) {
-            resultMap.put("status", false);
-            resultMap.put("message", "내 지점 메뉴 등록을 위해 점주 로그인을 해주세요.");
-            return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
-        }
+        MemberEntity findStore = memberRepo.findByMiSeq(memberNo);
+        
         // 로그인 정보가 점주인가 아닌가
-        else if(findStore.getMiGroup() != 2){
+        if(findStore.getMiGroup() != 2){
             resultMap.put("status", false);
             resultMap.put("message", "점주 회원이 아닙니다.");
             return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
@@ -357,11 +335,9 @@ public class StoreService {
         // 점주라면 해당 지점 + 지점 메뉴 추가하기
         else {
             Long storeSeq = findStore.getMiSbiSeq();
-
             
             Optional<StoreBasicInfoEntity> store =  sRepo.findById(storeSeq);
             Optional<MenuBasicInfoEntity> menu =  mRepo.findById(menuNo);
-            
             
             if(menu.isEmpty()){
                 resultMap.put("status", false);
@@ -369,12 +345,11 @@ public class StoreService {
                 return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
             }
             
-            
             // 중복검사 (연결테이블 내)
             StoreMenuConnectEntity smEntity = smRepo.findByStoreAndMenu(store.get(), menu.get());
             if((smEntity != null) && ((smEntity.getStore().getSbiSeq() == storeSeq) && (smEntity.getMenu().getMbiSeq() == menuNo))){
                 resultMap.put("status", false);
-                resultMap.put("message", smEntity.getStore().getSbiBranchName() + "에 " + smEntity.getMenu().getMbiName() + "번 메뉴는 이미 존재합니다.");
+                resultMap.put("message", smEntity.getStore().getSbiBranchName() + "에 " + smEntity.getMenu().getMbiName() + " 메뉴는 이미 존재합니다.");
                 return new ResponseEntity<>(resultMap, HttpStatus.BAD_REQUEST);
             }
     
@@ -384,7 +359,7 @@ public class StoreService {
                 .menu(mRepo.findById(menuNo).get()).build();
             smRepo.save(connEntity);
             resultMap.put("status", true);
-            resultMap.put("message", connEntity.getStore().getSbiBranchName() + "번 가게에 " + connEntity.getMenu().getMbiName() + "번 메뉴 등록이 완료되었습니다.");
+            resultMap.put("message", connEntity.getStore().getSbiBranchName() + " 에 " + connEntity.getMenu().getMbiName() + " 메뉴 등록이 완료되었습니다.");
             resultMap.put("inserted_data", connEntity);
             return new ResponseEntity<>(resultMap, HttpStatus.OK);
             
@@ -395,12 +370,11 @@ public class StoreService {
 
 
     // <내 지점에 등록된 메뉴 삭제하기> -> 완료 ♥
-    public ResponseEntity< Map<String, Object> > deleteStoreMenuList(Long menuNo, HttpSession session) {
+    public ResponseEntity< Map<String, Object> > deleteStoreMenuList(Long menuNo, Long memberNo) {
         Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
 
-
         // 세션으로 로그인 정보 불러오기
-        MemberEntity findStore = (MemberEntity)session.getAttribute("loginUser");
+        MemberEntity findStore = memberRepo.findByMiSeq(memberNo);
         if (findStore == null) {
             resultMap.put("status", false);
             resultMap.put("message", "내 지점 메뉴 삭제를 위해 점주 로그인을 해주세요.");
@@ -454,7 +428,7 @@ public class StoreService {
 
         for(StoreBasicInfoEntity s : list) {
             if(s.getSbiBranchName().contains(storeName)){ // param으로 받은 branchName 조회한 뒤
-                StoreInfoVO m = new StoreInfoVO(s);
+                StoreInfoVO m = new StoreInfoVO(s, sImageRepo.findBySiNumber(s.getSbiSeq()));
                 result.add(m);
             }
         }
@@ -493,19 +467,18 @@ public class StoreService {
         resultMap.put("list", smRepo.findAll());
         List<StoreMenuConnectEntity> list = smRepo.findByStore(sRepo.findById(storeSeq).get(), pageable).getContent();
         StoreInfoVO store = null;
-        List<MenuStockVO> menuList = new ArrayList<MenuStockVO>();
+        List<MenuStockDetailVO> menuList = new ArrayList<MenuStockDetailVO>();
         for(StoreMenuConnectEntity s : list) {
-            store = new StoreInfoVO(s.getStore());
-            menuList.add(new MenuStockVO(smRepo.findById(s.getSmcSeq()).get()));
+            store = new StoreInfoVO(s.getStore(), sImageRepo.findBySiNumber(s.getStore().getSbiSeq()));
+            menuList.add(new MenuStockDetailVO(smRepo.findById(s.getSmcSeq()).get(), miRepo.findByMiiNumber(s.getMenu())));
         }
         resultMap.put("status", true);
-        resultMap.put("message", store.getBranch() + "의 전체 메뉴 입니다.");
-        resultMap.put("list", new storeMenuStockVO(store, menuList));
+        resultMap.put("message", store.getBranchName() + "의 전체 메뉴 입니다.");
+        resultMap.put("list", new StoreMenuDetailVO(store, menuList));
 
         //페이징 처리
         Page<StoreMenuConnectEntity> page = smRepo.findAll(pageable);
         resultMap.put("totalPage", page.getTotalPages());
-        resultMap.put("MenuTotalCount", (page.getTotalElements()) -2);
         resultMap.put("currentPage", page.getNumber());
 
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
@@ -545,6 +518,7 @@ public class StoreService {
         MenuNutritionEntity nutrition = nutritionRepo.findByMnMbiSeq(menuSeq);
         MenuDetailVO result = new MenuDetailVO(menuImage, qr, nutrition);
         optionData.setDetail(result);
+        optionData.setSbSmcSeq(smRepo.findByStoreAndMenu(sRepo.findById(storeSeq).get(), mRepo.findById(menuSeq).get()).getSmcSeq());
 
         // 메뉴 연결외래키로 메뉴카테고리 받아오고, 카테고리-옵션카테고리에서 옵션카테고리 받아오기
         ProductCategoryEntity menuCategory = pcRepo.findById(result.getMenuCategorySeq()).get();

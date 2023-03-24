@@ -15,8 +15,8 @@ public class SendMessage {
             HashMap<String, String> params = new HashMap<String, String>();
     
            
-            params.put("to", "010-3676-9550");
-            params.put("from", phoneNum);
+            params.put("to", phoneNum);
+            params.put("from", "01036769550" );
             params.put("type", "SMS");
             params.put("text", "인증번호는["+certificationNum+"]입니다.");
             params.put("app_version", "test app 1.2");

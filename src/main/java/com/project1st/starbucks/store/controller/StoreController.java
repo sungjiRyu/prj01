@@ -26,45 +26,44 @@ public class StoreController {
     @Autowired StoreService stService;
 
     @GetMapping("/mystore") // <내 지점 조회하기> -> 완료 ♥
-    public ResponseEntity<Object> getMyStoreInfo(HttpSession session) {
-        return stService.myStoreInfo(session);
+    public ResponseEntity<Object> getMyStoreInfo(@RequestParam Long memberNo) {
+        return stService.myStoreInfo(memberNo);
     }
 
 
     @PatchMapping("/mystore") // <내 지점 수정하기> -> 완료 ♥
-    public ResponseEntity<Object> patchMyStoreEdit(@RequestBody StoreEditVO data, HttpSession session) {
-        return stService.myStoreEdit(data, session);
+    public ResponseEntity<Object> patchMyStoreEdit(@RequestBody StoreEditVO data, @RequestBody Long memberNo) {
+        return stService.myStoreEdit(data, memberNo);
     }
 
 
-    @GetMapping("/menu/search") // <내 지점에 메뉴 검색하기> -> 완료 ♥
-    public ResponseEntity<Object> getStoreMenuSearch(@RequestParam String menuName, HttpSession session) {
-        return stService.storeMenuSearch(menuName, session);
+    @GetMapping("/menu/search") // <내 지점에 메뉴 검색하기> 
+    public ResponseEntity<Object> getStoreMenuSearch(@RequestParam String menuName, @RequestParam Long memberNo) {
+        return stService.storeMenuSearch(menuName, memberNo);
     }
 
 
     @GetMapping("/menu/list") // <내 지점에 등록된 메뉴 보여주기> -> 완료 ♥
-    public ResponseEntity<Object> getStoreMenuList(/*@RequestParam Long storeSeq,*/Pageable pageable, HttpSession session) {
-        return stService.storeMenuList(pageable, session);
+    public ResponseEntity<Object> getStoreMenuList(Pageable pageable, @RequestParam Long memberNo) {
+        return stService.storeMenuList(pageable, memberNo);
     }
 
 
     @GetMapping("/menu/list/detail") // <내 지점에 등록된 메뉴 상세보기> -> 완료 ♥
-    public ResponseEntity<Object> getStoreMenuDetail(HttpSession session, @RequestParam Long menuNo) {
-        return stService.storeMenuDetail(session, menuNo);
+    public ResponseEntity<Object> getStoreMenuDetail(@RequestParam Long memberNo, @RequestParam Long menuNo) {
+        return stService.storeMenuDetail(memberNo, menuNo);
     }
 
 
     @PutMapping("/menu/add") // <내 지점에 메뉴 등록하기> -> 완료 ♥
-    // public ResponseEntity<Object> putStoreMenuList(@RequestBody StoreMenuAddVO data, HttpSession session) {
-    public ResponseEntity<Object> putStoreMenuList(@RequestParam Long menuNo, HttpSession session) {
-        return stService.insertStoreMenuList(menuNo, session);
+    public ResponseEntity<Object> putStoreMenuList(@RequestParam Long menuNo, @RequestParam Long memberNo) {
+        return stService.insertStoreMenuList(menuNo, memberNo);
     }
 
     
     @DeleteMapping("/menu/delete") // <내 지점에 메뉴 삭제하기> -> 완료 ♥
-    public ResponseEntity< Map<String, Object> > deleteStoreMenuList(@RequestParam Long menuNo, HttpSession session) {
-        return stService.deleteStoreMenuList(menuNo, session);
+    public ResponseEntity< Map<String, Object> > deleteStoreMenuList(@RequestParam Long menuNo, @RequestParam Long memberNo) {
+        return stService.deleteStoreMenuList(menuNo, memberNo);
     }
 
 

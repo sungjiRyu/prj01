@@ -28,6 +28,7 @@ public class GetShowMemberInfoDTO {
     private String Address;
     private String DetailAddress;
 
+   
 
     
     public static GetShowMemberInfoDTO getShowMemberInfoDTO (MemberEntity memberInfo){

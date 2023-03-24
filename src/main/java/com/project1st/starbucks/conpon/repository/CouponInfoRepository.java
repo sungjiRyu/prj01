@@ -9,5 +9,5 @@ import com.project1st.starbucks.conpon.entity.CouponInfoEntity;
 
 @Repository
 public interface CouponInfoRepository extends JpaRepository<CouponInfoEntity, Long> {
-    
+    CouponInfoEntity findByCiSeq(Long couponNum);
 }

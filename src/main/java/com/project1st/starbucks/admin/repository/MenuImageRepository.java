@@ -10,6 +10,6 @@ import com.project1st.starbucks.menu.entity.MenuBasicInfoEntity;
 @Repository
 public interface MenuImageRepository extends JpaRepository<MenuImageEntity, Long>{
     MenuImageEntity findByMiiSeq(Long miiSeq);
-
+    public Integer countByMiiSeq(Long miiSeq);
     MenuImageEntity findByMiiNumber(MenuBasicInfoEntity menu);
 }

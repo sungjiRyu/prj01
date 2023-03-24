@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class DetailBasketVO {
-    private Long sbSmcSeq;
+    private Long miSeq;
+    private Long storeMenuNo;
     private Long sbNumber;
 }

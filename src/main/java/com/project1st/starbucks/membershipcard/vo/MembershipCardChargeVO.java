@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class MembershipCardChargeVO {
-    private Integer cardMoney;
+    private Integer money;
     
     public MembershipCardChargeVO cardEntity (MembershipCardEntity membershipCard) {
         return MembershipCardChargeVO.builder()
-        .cardMoney(membershipCard.getCardMoney())
+        .money(membershipCard.getCardMoney())
         .build();
     }
 

@@ -24,7 +24,7 @@ public class MembershipCardEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "card_seq")          private Long cardSeq;
     @Column(name = "card_name")         @ColumnDefault("수타벅스 멤버십카드")     private String cardName;
-    @Column(name = "card_money")        @Nullable   @ColumnDefault("1")    private Integer cardMoney;
+    @Column(name = "card_money")        @Nullable   @ColumnDefault("0")    private Integer cardMoney;
     @Column(name = "card_mi_seq")      private Long cardMiSeq;
-    @Column(name = "card_image")        @ColumnDefault("1")    private Long cardImage;
+    @Column(name = "card_image")        @Nullable   @ColumnDefault("1")    private Long cardImage;
 }

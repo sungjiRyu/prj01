@@ -16,8 +16,8 @@ public class GetTempPwd {
                 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
 
             };
-        char[] charSetSign = new char[] {    
-                '!', '@', '#', '$', '%', '^', '&' };
+        // char[] charSetSign = new char[] {    
+        //         '!', '@', '#', '$', '%', '^', '&' };
 
         StringBuffer sb = new StringBuffer();
         SecureRandom sr = new SecureRandom();
@@ -26,13 +26,15 @@ public class GetTempPwd {
         int idx = 0;
         int lenNum = charSetNum.length;
         int lenAlp = charSetAlphabet.length;
-        int lenSign= charSetSign.length;
+        // int lenSign= charSetSign.length;
         
+        for (int i=0; i<2; i++) {
         idx = sr.nextInt(lenNum);    // 강력한 난수를 발생시키기 위해 SecureRandom을 사용한다.
         sb.append(charSetNum[idx]);
+        }
 
-        idx = sr.nextInt(lenSign);    // 강력한 난수를 발생시키기 위해 SecureRandom을 사용한다.
-        sb.append(charSetSign[idx]);
+        // idx = sr.nextInt(lenSign);    // 강력한 난수를 발생시키기 위해 SecureRandom을 사용한다.
+        // sb.append(charSetSign[idx]);
 
         for (int i=0; i<6; i++) {
             // idx = (int) (len * Math.random());

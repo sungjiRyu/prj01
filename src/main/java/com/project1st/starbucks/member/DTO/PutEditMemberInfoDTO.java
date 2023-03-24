@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class PutEditMemberInfoDTO {
     private String miPwd;
     private String miCheckPwd;    
-    private String miNickName;
+    private String miNickname;
     private String miName;
     private String miPhoneNum;
     private String miAdress;
@@ -26,7 +26,7 @@ public class PutEditMemberInfoDTO {
         return PutEditMemberInfoDTO.builder()
         .miPwd(memberInfoEntity.getMiPwd())
         .miCheckPwd(memberInfoEntity.getMiPwd())
-        .miNickName(memberInfoEntity.getMiNickname())
+        .miNickname(memberInfoEntity.getMiNickname())
         .miName(memberInfoEntity.getMiName())
         .miPhoneNum(memberInfoEntity.getMiPhoneNum())
         .miAdress(memberInfoEntity.getMiAddress())

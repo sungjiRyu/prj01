@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class MembershipCardDetailVO {
     private Long cardSeq;
     private String cardName;
-    private Integer cardMoney;
+    private Integer money;
     private Long cardMemberSeq;
     private Long cardImage;
     private String cardImageFile;
@@ -25,13 +25,13 @@ public class MembershipCardDetailVO {
     public MembershipCardDetailVO(MembershipCardEntity card, MembershipCardImageEntity cardImage, MembershipCardQREntity cardQr) {
         this.cardSeq = card.getCardSeq();
         this.cardName = card.getCardName();
-        this.cardMoney = card.getCardMoney();
+        this.money = card.getCardMoney();
         this.cardMemberSeq = card.getCardMiSeq();
         this.cardImage = card.getCardImage();
         this.cardImageFile = cardImage.getCardimageFile();
-        this.cardImageUri = cardImage.getCardimageUri();
+        this.cardImageUri = "http://haeji.mawani.kro.kr:9999/image/membership/" + cardImage.getCardimageUri();
         this.cardQRFile = cardQr.getCardqrFile();
-        this.cardQRUri = cardQr.getCardqrUri();
+        this.cardQRUri = "http://haeji.mawani.kro.kr:9999/image/cardqr/" + cardQr.getCardqrUri();
     }
 
 }
