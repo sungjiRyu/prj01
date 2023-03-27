@@ -1,6 +1,6 @@
-# 리ː플(readingːfly)
+# SUTABUKS
 
->도서 검색 및 독서 기록 서비스
+>스타벅스를 벤치마킹한 음식배달서비스
 ><br>[데모영상](https://youtu.be/nhItIg3HmSg) 보러가기
 ><br>전체 프로젝트 개요를 보고 싶다면 [프로젝트 개요.pdf](https://jeon1787.github.io/assets/220413%202%EC%A1%B0_%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8_%EB%B0%9C%ED%91%9C.pdf)
 
