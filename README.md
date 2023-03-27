@@ -1,8 +1,7 @@
 # SUTABUKS
 
 >스타벅스를 벤치마킹한 음식배달서비스
-><br>
-><br>전체 프로젝트 개요를 보고 싶다면 [프로젝트 개요.pdf](https://jeon1787.github.io/assets/220413%202%EC%A1%B0_%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8_%EB%B0%9C%ED%91%9C.pdf)
+><br> 프로젝트 개요 -> <a href="https://www.canva.com/design/DAFZamFxwmY/80jjBzyxkYYnk9qE58kZ1g/view?utm_content=DAFZamFxwmY&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink" target="_blank"><img src="https://img.shields.io/badge/PPT-F46D01?style=flat&logo=PPT&logoColor=white" /></a>
 
 
 <br>
@@ -11,65 +10,54 @@
 1. [제작 기간 & 제작 인원](#1-제작-기간--제작-인원)
 2. [담당 파트](#2-담당-파트)
 3. [사용 기술](#3-사용-기술)
-4. [아키텍처](#4-아키텍처)
-5. [게시판 ERD 설계](#5-게시판-erd-설계)
-6. [주요 Query](#6-주요-query)
-7. [주요 Javascript](#7-주요-javascript)
-8. [테스트](#8-테스트)
+4. [게시판 ERD 설계](#4 erd-설계)
+5. [주요 Query](#5-주요-query)
+6. [주요 Javascript](#6-주요-javascript)
+7. [테스트](#7-테스트)
 
 <br><br><br>
 
 ## 1. 제작 기간 & 제작 인원
-- 1월 1주차 ~ 3월 1주차 : 프로젝트 기획 및 설계
-- 2월 4주차 ~ <s>3월 5주차(계획)</s> 4월 2주차(지연) : 구현
-- 3월 5주차 ~ <s>4월 1주차(계획)</s> 4월 2주차(지연) : 테스트
-- 팀프로젝트(참여인원 5인)
+- 2022/12/28 ~ 2023/02/06
+- 참여인원 6명(프론트 3명, 백엔드 3명)
 
 <br><br><br>
 
 ## 2. 담당 파트
-- 게시판 : 게시글 CRUD, 파일 첨부, CKEditor
-- 댓글 : 댓글 CRUD
-- 도서 리뷰 : 리뷰 등록, 별점 등록
-- 기타 : 지도, 책장, 독서기록, 달력에 관여
+- 회원가입 : 일반회원가입, 점주회원가입, 유효성 체크
+- 로그인 
+- 아이디&비밀번호 찾기 : 인증번호 생성, 이메일or전화번호로 인증번호 발송, 임시비밀번호 발급
+- 마이페이지 : 내정보 조회/수정, 회원탈퇴
 
 <br><br><br>
 
 ## 3. 사용 기술
->**`Back-end`**<br>
-Java11<br>
-Spring Boot 2.6.3<br>
-Spring Framework 5.3<br>
-Gradle<br>
-oracle 18c XE<br>
-Thymeleaf<br>
+>**Back-end**<br>
+<div align=center>
+  <img src="https://img.shields.io/badge/Java-007396?style=flat&logo=Conda-Forge&logoColor=white" />
+  <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=MySQL&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=flat&logo=Spring Boot&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Gradle-02303A?style=flat&logo=Gradle&logoColor=white"/>
+  <img src="https://img.shields.io/badge/JPA-59666C?style=flat&logo=JPA&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Tomcat-F8DC75?style=flat&logo=Apache Tomcat&logoColor=white"/>
+</div>
 
->**`Front-end`**<br>
-CKEditor<br>
-Font-Awesome
+>**open-api**<br>
+<div align=center>
+ <img src="https://img.shields.io/badge/KakaoMap-FFCD00?style=flat&logo=KakaoMap&logoColor=white"/>
+  <img src="https://img.shields.io/badge/ZXING-4285F4?style=flat&logo=ZXING&logoColor=white"/>
+  <img src="https://img.shields.io/badge/CoolSMS-9999FF?style=flat&logo=CoolSMS&logoColor=white"/>
+</div>
 
->**`test`**<br>
-JUnit5<br>
-Postman
-
->**`형상관리`**<br>
-Git<br>
-GitHub<br>
-
-<br><br><br>
-
-## 4. 아키텍처
-
-<details>
-<summary>아키텍처 보기</summary>
-
-<img src="./src/main/resources/static/img/readme/board_architecture.png">
-
-</details>
+>**형상관리**<br>
+<div align=center>
+<img src="https://img.shields.io/badge/GitHub-181717?style=for-the-flat&logo=GitHub&logoColor=white">
+<img src="https://img.shields.io/badge/Git-F05032?style=for-the-flat&logo=Git&logoColor=white">
+</div>
 
 <br><br><br>
 
-## 5. 게시판 ERD 설계
+## 4. 게시판 ERD 설계
 <img src="./src/main/resources/static/img/readme/board_ERD.png">
 
 <br><br><br>
