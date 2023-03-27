@@ -12,8 +12,7 @@
 3. [사용 기술](#3-사용-기술)
 4. [ERD 설계](#4-erd-설계)
 5. [주요 코드](#5-주요-코드)
-6. [주요 Javascript](#6-주요-javascript)
-7. [테스트](#7-테스트)
+6. [단위테스트](#6-단위-테스트)
 
 <br><br><br>
 
@@ -64,11 +63,11 @@
 
 <br><br><br>
 
-## 6. 주요 코드
+## 5. 주요 코드
 
 <br>
 
-### 6.1 아이디 찾기 인증번호 발송(휴대폰)
+### 5.1 아이디 찾기 인증번호 발송(휴대폰)
 ```
 public Map<String, Object> IdAuthNumByPhone(PostFindIdDTO data, HttpSession session) {
         MemberEntity user = null;
@@ -128,7 +127,7 @@ public Map<String, Object> IdAuthNumByPhone(PostFindIdDTO data, HttpSession sess
 
 <br><br><br>
 
-## 8. 단위 테스트
+## 6. 단위 테스트
 
 <br>
 
