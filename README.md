@@ -1,9 +1,13 @@
 # SUTABUKS
 
->스타벅스를 벤치마킹한 음식배달서비스
-><br> 프로젝트 개요 -> <a href="https://www.canva.com/design/DAFZamFxwmY/80jjBzyxkYYnk9qE58kZ1g/view?utm_content=DAFZamFxwmY&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink" target="_blank"><img src="https://img.shields.io/badge/PPT-F46D01?style=flat&logo=PPT&logoColor=white" /></a>
+>스타벅스를 벤치마킹한 음식 배달 서비스 입니다.
 
-https://github.com/sungjiRyu/prj01/assets/116089824/3eaa477b-4ec9-438d-9662-248b62ec064e
+<br>
+
+##  시연영상
+https://github.com/sungjiRyu/prj01/assets/116089824/5ffe017b-23a3-4132-8a89-1dfb6421e0c1
+
+<br> 프로젝트 개요 -> <a href="https://www.canva.com/design/DAFZamFxwmY/80jjBzyxkYYnk9qE58kZ1g/view?utm_content=DAFZamFxwmY&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink" target="_blank"><img src="https://img.shields.io/badge/PPT-F46D01?style=flat&logo=PPT&logoColor=white" /></a>
 
 <br>
 
