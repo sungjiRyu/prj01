@@ -34,7 +34,7 @@ https://github.com/sungjiRyu/prj01/assets/116089824/5ffe017b-23a3-4132-8a89-1dfb
 
 <br><br><br>
 
-## 2. 담당기능
+## 2. 담당 기능
 
 
 - 회원가입  
