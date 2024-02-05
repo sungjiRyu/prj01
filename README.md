@@ -37,17 +37,17 @@ https://github.com/sungjiRyu/prj01/assets/116089824/5ffe017b-23a3-4132-8a89-1dfb
 ## 2. 담당기능
 
 
-- 회원가입
+- 회원가입  
   [▶ 코드 보러가기](https://github.com/sungjiRyu/prj01/blob/2b04fbf055e8703a6361e07ac2c2970695377f06/src/main/java/com/project1st/starbucks/admin/service/MemberService.java#L46)
   - 정규식을 사용해서 사용자의 입력값을 체크합니다.
   - AES 암호키로 사용자의 pwd를 암호화 합니다.  
-- 로그인
+- 로그인  
   - [▶ 코드 보러가기](https://github.com/sungjiRyu/prj01/blob/2b04fbf055e8703a6361e07ac2c2970695377f06/src/main/java/com/project1st/starbucks/admin/service/MemberService.java#L263)
-- id/pwd 찾기
+- id/pwd 찾기  
   [▶ 코드 보러가기](https://github.com/sungjiRyu/prj01/blob/2b04fbf055e8703a6361e07ac2c2970695377f06/src/main/java/com/project1st/starbucks/admin/service/MemberService.java#L509)
   - 문자와 이메일 발송 api를 이용해서 구현해보았습니다
-- 관리자 페이지
-- [▶ 코드 보러가기](https://github.com/sungjiRyu/prj01/blob/2b04fbf055e8703a6361e07ac2c2970695377f06/src/main/java/com/project1st/starbucks/resources/templates/addStore.html#L1)
+- 관리자 페이지  
+- [▶ 코드 보러가기](https://github.com/sungjiRyu/prj01/blob/760f9e3eebfbe216f46f1f840860061af4467327/src/main/resources/templates/addStore.html#L29)
   - axios 를 사용해서 비동기 방식으로 구현했습니다.
 
 
