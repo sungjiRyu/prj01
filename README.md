@@ -37,7 +37,8 @@ https://github.com/sungjiRyu/prj01/assets/116089824/5ffe017b-23a3-4132-8a89-1dfb
 ## 2. 담당기능
 
 
-- 회원가입 https://github.com/sungjiRyu/prj01/blob/2b04fbf055e8703a6361e07ac2c2970695377f06/src/main/java/com/project1st/starbucks/admin/service/MemberService.java#L35
+- 회원가입
+  ▶ 코드 보러가기(https://github.com/sungjiRyu/prj01/blob/2b04fbf055e8703a6361e07ac2c2970695377f06/src/main/java/com/project1st/starbucks/admin/service/MemberService.java#L35)
 - 로그인
 - id/pwd 찾기
 - 관리자 페이지
